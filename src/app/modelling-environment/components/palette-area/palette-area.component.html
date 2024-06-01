@@ -1,0 +1,213 @@
+<div>
+  <label for="language">Select Modeling Language:</label>
+  <select id="language" (change)="onLanguageChange($event)">
+    <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+  </select>
+</div>
+<div>
+  <label for="view">Select View:</label>
+  <select id="view" (change)="onViewChange($event)">
+    <option *ngFor="let view of views" [value]="view">{{ view }}</option>
+  </select>
+</div>
+<div *ngFor="let element of elements" (mouseover)="onHover(element)" (mouseleave)="onLeave()">
+  <div class="palette-element"
+       draggable="true"
+       (dragstart)="onDragStart($event, element)">
+    <div>{{element.name}}</div>
+  </div>
+  <div *ngIf="hoveredElement && hoveredElement.name === element.name" class="hover-options">
+    <div *ngIf="element.type === 'event'" class="node-options">
+      <div class="bar">Events</div>
+      <div (click)="onOptionClick('start', element)" class="node-option start-node">Start Node</div>
+      <div (click)="onOptionClick('end', element)" class="node-option end-node">End Node</div>
+    </div>
+    <div *ngIf="element.type === 'activity'" class="node-options">
+      <div class="bar">Activities</div>
+      <div (click)="onOptionClick('serviceTask', element)" class="node-option service-task">Service Task</div>
+      <div (click)="onOptionClick('manualTask', element)" class="node-option manual-task">Manual Task</div>
+    </div>
+  </div>
+</div>
+
+<!--<div>
+  <label for="language">Select Modeling Language:</label>
+  <select id="language" (change)="onLanguageChange($event)">
+    <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+  </select>
+</div>
+<div>
+  <label for="view">Select View:</label>
+  <select id="view" (change)="onViewChange($event)">
+    <option *ngFor="let view of views" [value]="view">{{ view }}</option>
+  </select>
+</div>
+<div *ngFor="let element of elements" (mouseover)="onHover(element)" (mouseleave)="onLeave()">
+  <div class="palette-element"
+       draggable="true"
+       (dragstart)="onDragStart($event, element)">
+    <div>{{element.name}}</div>
+  </div>
+  <div *ngIf="hoveredElement && hoveredElement.name === element.name" class="hover-options">
+    <div *ngIf="element.type === 'event'" class="node-options">
+      <div (click)="onOptionClick('start', element)" class="node-option start-node">Start Node</div>
+      <div (click)="onOptionClick('end', element)" class="node-option end-node">End Node</div>
+    </div>
+  </div>
+</div>-->
+
+
+<!--<div>
+  <label for="language">Select Modeling Language:</label>
+  <select id="language" (change)="onLanguageChange($event)">
+    <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+  </select>
+</div>
+<div>
+  <label for="view">Select View:</label>
+  <select id="view" (change)="onViewChange($event)">
+    <option *ngFor="let view of views" [value]="view">{{ view }}</option>
+  </select>
+</div>
+<div *ngFor="let element of elements" (mouseover)="onHover(element)" (mouseleave)="onLeave()">
+  <div class="palette-element"
+       draggable="true"
+       (dragstart)="onDragStart($event, element)">
+    <div>{{element.name}}</div>
+  </div>
+  <div *ngIf="hoveredElement && hoveredElement.name === element.name" class="hover-options">
+    <div *ngIf="element.type === 'event'">
+      <div (click)="onOptionClick('start', element)">Start Event</div>
+      <div (click)="onOptionClick('end', element)">End Event</div>
+    </div>
+  </div>
+</div>-->
+
+<!---<div>
+  <label for="language">Select Modeling Language:</label>
+  <select id="language" (change)="onLanguageChange($event)">
+    <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+  </select>
+</div>
+<div>
+  <label for="view">Select View:</label>
+  <select id="view" (change)="onViewChange($event)">
+    <option *ngFor="let view of views" [value]="view">{{ view }}</option>
+  </select>
+</div>
+<div *ngFor="let element of elements" (mouseover)="onHover(element)" (mouseleave)="onLeave()">
+  <div class="palette-element"
+       draggable="true"
+       (dragstart)="onDragStart($event, element)">
+    <img *ngIf="element.imageUrl" [src]="element.imageUrl" alt="{{element.name}}" />
+    <div *ngIf="!element.imageUrl">{{element.name}}</div>
+  </div>
+  <div *ngIf="hoveredElement && hoveredElement.name === element.name" class="hover-options">
+    <div *ngIf="element.type === 'event'">
+      <div (click)="onOptionClick('start', element)">Start Event</div>
+      <div (click)="onOptionClick('end', element)">End Event</div>
+    </div>
+  </div>
+</div>-->
+
+
+
+<!--
+  <app-sidebar></app-sidebar>
+<ngx-reactflow
+  [nodes]="nodes"
+  [edges]="edges"
+></ngx-reactflow>
+<div>
+  <label for="language">Select Modeling Language:</label>
+  <select id="language" (change)="onLanguageChange($event)">
+    <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+  </select>
+</div>
+<div>
+  <label for="view">Select View:</label>
+  <select id="view" (change)="onViewChange($event)">
+    <option *ngFor="let view of views" [value]="view">{{ view }}</option>
+  </select>
+</div>
+<div *ngFor="let element of elements" (mouseover)="onHover(element)" (mouseleave)="onLeave()">
+  <img *ngIf="element.imageUrl" [src]="element.imageUrl" alt="{{element.name}}" (click)="onElementClick(element)" />
+  <div *ngIf="!element.imageUrl" (click)="onElementClick(element)">{{element.name}}</div>
+  <div *ngIf="hoveredElement && hoveredElement.name === element.name" class="hover-options">
+    <div (click)="onOptionClick('start')">Start Event</div>
+    <div (click)="onOptionClick('end')">End Event</div>
+  </div>
+</div>
+<div>
+  <label for="language">Select Modeling Language:</label>
+  <select id="language" (change)="onLanguageChange($event)">
+    <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+  </select>
+</div>
+
+<div>
+  <label for="view">Select View:</label>
+  <select id="view" (change)="onViewChange($event)">
+    <option *ngFor="let view of views" [value]="view">{{ view }}</option>
+  </select>
+</div>
+
+<div class="palette-area"
+     (drop)="onDrop($event)"
+     (dragover)="onDragOver($event)">
+
+  <div *ngFor="let element of elements"
+       class="palette-element"
+       draggable="true"
+       (dragstart)="onDragStart($event, element)"
+       (mouseover)="onHover(element)"
+       (mouseleave)="onLeave()">
+
+    <img *ngIf="element.imageUrl" [src]="element.imageUrl" alt="{{element.name}}" />
+    <div *ngIf="!element.imageUrl">{{element.name}}</div>
+
+
+    <div *ngIf="hoveredElement && hoveredElement.name === element.name" class="hover-options">
+      <div *ngIf="element.type === 'start'" (click)="onOptionClick('start')">Start Event</div>
+      <div *ngIf="element.type === 'end'" (click)="onOptionClick('end')">End Event</div>
+    </div>
+  </div>
+</div>-->
+<!--
+<div>
+  <label for="language">Select Modeling Language:</label>
+  <select id="language" (change)="onLanguageChange($event)">
+    <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+  </select>
+</div>
+
+<div>
+  <label for="view">Select View:</label>
+  <select id="view" (change)="onViewChange($event)">
+    <option *ngFor="let view of views" [value]="view">{{ view }}</option>
+  </select>
+</div>
+
+<div class="palette-area"
+     (drop)="onDrop($event)"
+     (dragover)="onDragOver($event)">
+
+  <div *ngFor="let element of elements"
+       class="palette-element"
+       draggable="true"
+       (dragstart)="onDragStart($event, element)"
+       (mouseover)="onHover(element)"
+       (mouseleave)="onLeave()">
+
+
+    <img *ngIf="element.imageUrl" [src]="element.imageUrl" alt="{{element.name}}" />
+    <div *ngIf="!element.imageUrl">{{element.name}}</div>
+
+    <div *ngIf="hoveredElement && hoveredElement.name === element.name" class="hover-options">
+      <div *ngIf="element.type === 'event' && element.name === 'start'" (click)="onOptionClick('start')">Start Event</div>
+      <div *ngIf="element.type === 'event' && element.name === 'end'" (click)="onOptionClick('end')">End Event</div>
+    </div>
+  </div>
+
+</div>
+--->

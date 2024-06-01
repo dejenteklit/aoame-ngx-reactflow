@@ -1,0 +1,143 @@
+.flex-container{
+  border: 1px solid #000000;
+  height: 100%;
+  width: 100%;
+}
+.palette-area{
+  /*background-color: white;*/
+  border-width: 1px;
+  border-style: ridge;
+  width: 214px;
+  min-width: 214px;
+  display: inline-block;
+  z-index: 2;
+  overflow: visible;
+}
+.modelling-area{
+  border-right: 1px solid #333333;
+  min-height: 100%;
+  width: 97%;
+  z-index: 1;
+}
+
+.header-pane {
+  background-color: #dddddd;
+  border-width: 4px;
+  border-style: ridge;
+  width: 99%;
+  height: 90px;
+  display: flex;
+  flex-flow: row wrap;
+  /* This aligns items to the end line on main-axis */
+  justify-content: flex-end;
+  display: inline-block;
+  z-index: 2;
+}
+
+.modelling-environment {
+  display: flex;
+  flex-direction: row;
+  height: 100vh; /* Adjust based on your requirements */
+  border: 1px solid #ccc; /* Add border to the modelling environment */
+}
+
+.palette-area {
+  flex: 1; /* Adjust based on your requirements */
+  padding: 10px;
+  border-right: 1px solid #ccc; /* Add border to the right */
+}
+
+.modeling-area {
+  flex: 3; /* Adjust based on your requirements */
+  position: relative;
+  padding: 10px;
+  border-left: 1px solid #ccc; /* Add border to the left */
+}
+:host ::ng-deep {
+  .react-flow__node-custom {
+    font-size: 10px;
+    width: 180px;
+    background: #f5f5f6;
+    color: #222;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
+    border-radius: 2px;
+  }
+
+  .react-flow__node-custom .react-flow__handle {
+    top: 24px;
+    right: -15px;
+    width: 6px;
+    height: 10px;
+    border-radius: 2px;
+    background-color: #778899;
+  }
+
+  .react-flow__node.circle {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+  }
+
+  .react-flow__node.annotation {
+    border-radius: 0;
+    text-align: left;
+    background: white;
+    border: none;
+    line-height: 1.4;
+    width: 225px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
+  }
+
+  .react-flow__node.annotation .react-flow__handle {
+    display: none;
+  }
+
+  .custom-node__header {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .custom-node__body {
+    padding: 10px;
+  }
+
+  .custom-node__select {
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .custom-node__select select {
+    width: 100%;
+    margin-top: 5px;
+    font-size: 10px;
+  }
+}
+.modelling-environment {
+  display: flex;
+  height: 100vh; /* Ensure it takes the full viewport height */
+}
+
+.palette-container {
+  width: 20%; /* Adjust the width as needed */
+  border-right: 2px solid black; /* Add a right border */
+  box-sizing: border-box;
+}
+
+.modelling-area-container {
+  width: 80%; /* Adjust the width as needed */
+  border-left: 2px solid black; /* Add a left border */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+ngx-reactflow {
+  flex-grow: 1; /* Ensure it takes up the remaining space */
+  height: 100%; /* Full height of the container */
+  width: 100%; /* Full width of the container */
+  box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
