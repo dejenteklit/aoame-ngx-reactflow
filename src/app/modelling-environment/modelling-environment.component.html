@@ -1,0 +1,30 @@
+<!---<div class="modelling-environment">
+  <app-palette-area (addNode)="handleAddNode($event)"></app-palette-area>
+  <app-modeling-area [nodes]="nodes"></app-modeling-area>
+</div>-->
+<!--<div class="modelling-environment">
+  <div class="palette-area">
+    <app-palette-area (addNode)="handleAddNode($event)"></app-palette-area>
+  </div>
+  <div class="modeling-area">
+    <app-modeling-area [nodes]="nodes">
+      <app-reactflow></app-reactflow>
+    </app-modeling-area>
+  </div>
+</div>-->
+<div class="modelling-environment">
+  <app-palette-area
+    (addNode)="onAddNode($event)"
+    (addEdge)="onAddEdge($event)">
+  ></app-palette-area>
+  <div class="modelling-area-container">
+  <app-modelling-area
+    [nodes]="nodes"
+    [edges]="edges"
+    (nodesChange)="handleNodesChange($event)"
+    (edgesChange)="handleEdgesChange($event)"
+    (connect)="handleConnect($event)">
+  </app-modelling-area>
+</div>
+</div>
+

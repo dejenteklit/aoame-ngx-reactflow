@@ -1,0 +1,37 @@
+.palette-element {
+
+}
+
+.hover-options {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.node-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.node-option {
+  cursor: pointer;
+  padding: 5px;
+  margin: 2px 0;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+}
+
+.node-option.start-node {
+  color: green;
+}
+
+.node-option.end-node {
+  color: red;
+}
+
+.node-option:hover {
+  background-color: #e0e0e0;
+}
