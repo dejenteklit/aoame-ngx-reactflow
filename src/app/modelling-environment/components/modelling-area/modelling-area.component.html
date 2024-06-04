@@ -1,38 +1,32 @@
-<!--<div _ngcontent-csa-c144="" style="display: flex; flex-direction: row;" class="modeling-area">
-      <div _ngcontent-csa-c144="" id="myDiagramDiv" style="flex-grow: 1; height: 700px;" *ngFor="let node of nodes" [style.left.px]="node.position.x" [style.top.px]="node.position.y" class="node">
-        <img *ngIf="node.data.imageUrl" [src]="node.data.imageUrl" [alt]="node.data.label" />
-        <div *ngIf="!node.data.imageUrl">{{ node.data.label }}</div>
-      </div>
-</div>
--->
-
-
-<!--<div class="modelling-area" style="position: relative; height: 100%; width: 100%;">
-  <div id="myDiagramDiv" class="nodes-container">
-    <div *ngFor="let node of nodes" class="node" [style.left.px]="node.position.x" [style.top.px]="node.position.y">
-      <img *ngIf="node.data.imageUrl" [src]="node.data.imageUrl" [alt]="node.data.label" />
-      <div *ngIf="!node.data.imageUrl">{{ node.data.label }}</div>
-    </div>
-  </div>
-</div>-->
 <div class="flex-container" fxLayout="row">
-  <div class="modelling-area" style="display: flex; flex-direction: row;">
-    <div id="myDiagramDiv" class="nodes-container">
-      <div *ngFor="let node of nodes" class="node" [style.left.px]="node.position.x" [style.top.px]="node.position.y">
+  <div class="modelling-area" style="width: 78.85vw;display: flex; flex-direction: row;">
+    <!--<div id="myDiagramDiv" class="nodes-container" style="position: relative; flex-grow: 1;">
+      <div *ngFor="let node of nodes" class="node"
+           [style.left.px]="node.position.x"
+           [style.top.px]="node.position.y">
+        <div class="node-content">
+          {{ node.data.label }}
+        </div>
       </div>
-    </div>
-    <div style="width: 80vw; height: 100vh; border: 2px solid black; box-sizing: border-box;">
+    </div>-->
+    <div style="flex-grow: 1; width: 78.85vw; height: 100vh; border: 0.25px solid black; box-sizing: border-box;">
       <ngx-reactflow
         [nodes]="nodes"
         [edges]="edges"
         (nodesChange)="onNodesChange($event)"
         (edgesChange)="onEdgesChange($event)"
-        (OnConnect)="onConnect($event)"
-        [fitView]="true">
+        (connect)="onConnect($event)"
+        (contextmenu)="onRightClick($event)"
+        [fitView]="true"
+        style="width: 100%; height: 100%;">
       </ngx-reactflow>
-    </div>
   </div>
 </div>
+
+
+
+
+
 
 
 
