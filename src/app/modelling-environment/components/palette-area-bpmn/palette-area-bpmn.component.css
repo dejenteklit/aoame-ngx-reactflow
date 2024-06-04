@@ -1,0 +1,138 @@
+.palette-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.palette-item {
+  margin-bottom: 10px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn, .dropbtn-task {
+  background-color: #ADD8E6; /* Light blue background */
+  color: black;
+  padding: 16px;
+  font-size: 16px;
+  border: 2px solid black; /* Black border */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropbtn {
+  border-radius: 50%;
+  width: 60px; /* Increased width */
+  height: 60px; /* Increased height */
+}
+
+.dropbtn-task {
+  border-radius: 15px; /* Rounded corners */
+  width: 100px; /* Width for task node */
+  height: 40px; /* Height for task node */
+  position: relative;
+}
+
+.dropbtn-task img {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 30px; /* Size of the icon */
+  height: 30px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content .dropdown-item, .dropdown-content .task-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.dropdown-content .dropdown-item:hover, .dropdown-content .task-item:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown-content .circle {
+  width: 60px; /* Increased width */
+  height: 60px; /* Increased height */
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.dropdown-content .start-event {
+  border: 2px solid black;
+  background-color: #FFD700; /* Gold for start event */
+  width: 40px; /* Reduced width */
+  height: 40px; /* Reduced height */
+}
+
+.dropdown-content .end-event {
+  border: 2px solid red;
+  background-color: #FFFFFF; /* White for end event */
+  width: 40px; /* Reduced width */
+  height: 40px; /* Reduced height */
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn, .dropdown:hover .dropbtn-task {
+  background-color: #3e8e41;
+}
+
+.hover-options {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Styles for Task Nodes */
+.dropdown-content .task-item {
+  border: 2px solid black;
+  border-radius: 15px; /* Rounded corners */
+  width: 100px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ADD8E6; /* Light blue background */
+  color: black;
+  font-size: 0px;
+  cursor: pointer;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  transition: background-color 0.3s ease;
+  margin: 5px 0;
+  position: relative;
+}
+
+.dropdown-content .task-item img {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 80px; /* Size of the icon */
+  height: 50px;
+}
+
+.dropdown-content .task-item:hover {
+  background-color: #fdb36a;
+  color: white;
+}

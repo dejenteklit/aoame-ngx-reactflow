@@ -1,1 +1,115 @@
-<p>palette-area-bpmn works!</p>
+<div class="palette-container">
+  <div *ngFor="let element of elements" class="palette-item">
+    <!-- Non Event Node -->
+    <div class="dropdown" *ngIf="element.type === 'nonEvent'">
+      <button class="dropbtn" (mouseover)="onHoverOverNonEvent()">
+        {{ element.name }}
+        <img src="assets/Simple_Start.png" alt="Non Event" /> <!-- Adjust image path accordingly -->
+      </button>
+      <div class="dropdown-content">
+        <div class="dropdown-item" *ngIf="showStartNode" (click)="onOptionClick(element, 'startEvent')">
+          <div class="circle start-event" Handle type="source" position={Position.Right} ></div>
+          Start Event
+        </div>
+        <div class="dropdown-item" *ngIf="showEndNode" (click)="onOptionClick(element, 'endEvent')">
+          <div class="circle end-event" Handle type="target" position={Position.Left}></div>
+          End Event
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Node -->
+    <div class="dropdown" *ngIf="element.type === 'task'">
+      <button class="dropbtn-task" (mouseover)="onHoverOverTask()">
+        {{ element.name }}
+        <img src="assets/Task.png" alt="Task" /> <!-- Adjust image path accordingly -->
+      </button>
+      <div class="dropdown-content">
+        <div class="task-item" *ngIf="showTaskOptions" (click)="onOptionClick(element, 'manualTask')">
+          Manual Task
+          <img src="assets/Manual_Task.png" alt="Manual Task" /> <!-- Adjust image path accordingly -->
+        </div>
+        <div class="task-item" *ngIf="showTaskOptions" (click)="onOptionClick(element, 'serviceTask')">
+          Service Task
+          <img src="assets/Service_Task.png" alt="Service Task" /> <!-- Adjust image path accordingly -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<div class="palette-container">
+
+  <div *ngFor="let element of elements" class="palette-item">
+    <div class="dropdown" *ngIf="element.type === 'nonEvent'">
+      <button class="dropbtn" (mouseover)="onHoverOverNonEvent()">{{ element.name }}</button>
+      <div class="dropdown-content">
+        <div class="dropdown-item" *ngIf="showStartNode" (click)="onOptionClick(element, 'startEvent')">
+          <div class="circle start-event"></div>
+          Start Event
+        </div>
+        <div class="dropdown-item" *ngIf="showEndNode" (click)="onOptionClick(element, 'endEvent')">
+          <div class="circle end-event"></div>
+          End Event
+        </div>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+<!--<div class="palette-container">
+  <div *ngFor="let element of elements" class="palette-item">
+    <div class="dropdown">
+      <button class="dropbtn">{{ element.name }}</button>
+      <div class="dropdown-content">
+        <div class="dropdown-item" (click)="onOptionClick(element, 'startEvent')">
+          <div class="circle start-event"></div>
+          Start Event
+        </div>
+        <div class="dropdown-item" (click)="onOptionClick(element, 'endEvent')">
+          <div class="circle end-event"></div>
+          End Event
+        </div>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+
+
+
+<!---<div class="palette-container">
+  <div *ngFor="let element of elements" class="palette-item">
+    <div class="dropdown">
+      <button class="dropbtn">{{ element.name }}</button>
+      <div class="dropdown-content">
+        <a href="#" (click)="onOptionClick(element, 'startEvent')">Start Event</a>
+        <a href="#" (click)="onOptionClick(element, 'endEvent')">End Event</a>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+<!--<div class="palette-container">
+  <div *ngFor="let element of elements" class="palette-item">
+    <div class="dropdown">
+      <button class="dropbtn">{{ element.name }}</button>
+      <div class="dropdown-content">
+        <a href="#" (click)="onOptionClick(element, 'startEvent')">Start Event</a>
+        <a href="#" (click)="onOptionClick(element, 'endEvent')">End Event</a>
+      </div>
+    </div>
+  </div>
+</div>-->
