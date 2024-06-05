@@ -3,7 +3,7 @@
   <select id="language-select" (change)="onLanguageChange($event)">
     <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
   </select>
-
+  <br>
   <label for="view-select">Select View:</label>
   <select id="view-select" (change)="onViewChange($event)">
     <option *ngFor="let view of views" [value]="view">{{ view }}</option>
