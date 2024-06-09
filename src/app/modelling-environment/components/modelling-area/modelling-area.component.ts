@@ -14,7 +14,7 @@ export class ModellingAreaComponent implements OnChanges {
   @Output() connect = new EventEmitter<Connection>();
 
   contextMenuVisible: boolean = false;
-  contextMenuPosition = { x: 0, y: 0 };
+  contextMenuPosition = {x: 0, y: 0};
   selectedNodeId: string | null = null;
 
   ngOnChanges(changes: SimpleChanges) {
@@ -51,7 +51,6 @@ export class ModellingAreaComponent implements OnChanges {
     this.edges = addEdge(newEdge, this.edges);
     this.edgesChange.emit(this.edges);
   }
-
   onRightClick(event: MouseEvent, nodeId?: string) {
     event.preventDefault();
     this.contextMenuVisible = true;
@@ -60,23 +59,11 @@ export class ModellingAreaComponent implements OnChanges {
       this.selectedNodeId = nodeId;
     }
   }
-
-  onDeleteNode() {
-    if (this.selectedNodeId) {
-      this.nodes = this.nodes.filter(node => node.id !== this.selectedNodeId);
-      this.edges = this.edges.filter(edge => edge.source !== this.selectedNodeId && edge.target !== this.selectedNodeId);
-      this.nodesChange.emit(this.nodes);
-      this.edgesChange.emit(this.edges);
-      this.contextMenuVisible = false;
-    }
-  }
-
-  onCancelContextMenu() {
-    this.contextMenuVisible = false;
-    this.selectedNodeId = null;
+  onNodeContextMenu(event: any) {
+    const { event: mouseEvent, node } = event;
+    this.onRightClick(mouseEvent, node.id);
   }
 }
-
 /*import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
 

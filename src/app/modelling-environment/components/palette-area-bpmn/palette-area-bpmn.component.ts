@@ -23,6 +23,10 @@ export class PaletteAreaBpmnComponent implements OnInit {
   showTaskOptions: boolean = false;
   lastNodePosition = { x: 0, y: 0 };
   lastNodeId: string | null = null;
+  contextMenuVisible: boolean = false;
+  contextMenuPosition = {x: 0, y: 0};
+  selectedNodeId: string | null = null;
+
 
   @Output() addNode = new EventEmitter<Node<any, string | undefined>>();
   @Output() addEdge = new EventEmitter<Edge>();
@@ -77,8 +81,8 @@ export class PaletteAreaBpmnComponent implements OnInit {
         style: {
           border: '0.20px solid black',
           borderRadius: '50%',
-          width: '40px',
-          height: '40px',
+          width: '58px',
+          height: '58px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -100,10 +104,10 @@ export class PaletteAreaBpmnComponent implements OnInit {
         position: newNodePosition,
         draggable: true,
         style: {
-          border: '0.20px solid red',
+          border: '0.10px solid red',
           borderRadius: '50%',
-          width: '40px',
-          height: '40px',
+          width: '58px',
+          height: '58px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -127,9 +131,9 @@ export class PaletteAreaBpmnComponent implements OnInit {
         draggable: true,
         style: {
           border: '0.20px solid black',
-          borderRadius: '10px',
-          width: '90px',
-          height: '45px',
+          borderRadius: '13px',
+          width: '103px',
+          height: '58px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -199,5 +203,11 @@ export class PaletteAreaBpmnComponent implements OnInit {
 
     this.edges = addEdge(newEdge, this.edges);
     this.edgesChange.emit(this.edges);
+  }
+  onRightClick(event: MouseEvent, nodeId: string) {
+    event.preventDefault();
+    this.contextMenuVisible = true;
+    this.contextMenuPosition = { x: event.clientX, y: event.clientY };
+    this.selectedNodeId = nodeId;
   }
 }
