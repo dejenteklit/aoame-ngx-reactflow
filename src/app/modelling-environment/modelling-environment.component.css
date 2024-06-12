@@ -26,6 +26,7 @@
   border-style: ridge;
   width: 99%;
   height: 90px;
+  display: flex;
   flex-flow: row wrap;
   /* This aligns items to the end line on main-axis */
   justify-content: flex-end;
@@ -41,6 +42,9 @@
 }
 
 .palette-area {
+  width: 60%; /* Adjust the width as needed */
+  border-right: 2px solid black; /* Add a right border */
+  box-sizing: border-box;
   flex: 1; /* Adjust based on your requirements */
   padding: 10px;
   border-right: 1px solid #ccc; /* Add border to the right */
@@ -121,13 +125,13 @@
 }
 
 .palette-container {
-  width: 50%; /* Adjust the width as needed */
+  width: 60%; /* Adjust the width as needed */
   border-right: 2px solid black; /* Add a right border */
   box-sizing: border-box;
 }
 
 .modelling-area-container {
-  width: 80%; /* Adjust the width as needed */
+  width: 60%; /* Adjust the width as needed */
   border-left: 2px solid black; /* Add a left border */
   box-sizing: border-box;
   display: flex;
@@ -140,3 +144,12 @@ ngx-reactflow {
   width: 80%; /* Full width of the container */
   box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
 }
+/* Hide the top handle */
+.react-flow__handle[data-handlepos="top"] {
+  display: none !important;
+}
+/* Hide the bottom handle */
+.react-flow__handle[data-handlepos="bottom"] {
+  display: none !important;
+}
+

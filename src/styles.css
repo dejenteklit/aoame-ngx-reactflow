@@ -9,3 +9,10 @@
 body {
   margin: 0;
 }
+.react-flow__handle[data-handlepos="top"] {
+  display: none !important;
+}
+/* Hide the bottom handle */
+.react-flow__handle[data-handlepos="bottom"] {
+  display: none !important;
+}

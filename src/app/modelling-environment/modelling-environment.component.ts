@@ -45,7 +45,7 @@ import { Node, Edge, Connection, MarkerType } from 'reactflow';
 export class ModellingEnvironmentComponent {
   nodes: Node[] = [];
   edges: Edge[] = [];
-
+  @Output() rightClick = new EventEmitter<{ event: MouseEvent, nodeId: string }>();
 
   constructor() {
   }
@@ -83,7 +83,9 @@ export class ModellingEnvironmentComponent {
       this.edges = [...this.edges, newEdge];
     }
 }
-
+  handleRightClick(event: MouseEvent, nodeId: string) {
+    this.rightClick.emit({ event, nodeId });
+  }
   ngOnInit() {}
 }
   /**nodes: Node[] = [];
