@@ -10,6 +10,7 @@ import { PaletteAreaBpmnComponent } from './modelling-environment/components/pal
 import { PaletteAreaComponent } from './modelling-environment/components/palette-area/palette-area.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     ReactFlowComponent,
     BrowserAnimationsModule,  // Required for Angular Material
     MatToolbarModule,
+    MatSelectModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
