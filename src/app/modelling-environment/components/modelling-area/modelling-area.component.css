@@ -1,3 +1,8 @@
+.modelling-area {
+  width: 80%;
+  height: 100%;
+  position: relative;
+}
 
 .context-menu {
   position: absolute;

@@ -1,165 +1,37 @@
-.palette-container {
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  gap: 2em;
-}
+.palette-element {
 
-.palette-item {
-  margin-bottom: 30px;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropbtn{
-  background-color: #6ad8cd; /* Light blue background */
-  color: black;
-  padding: 16px;
-  font-size: 16px;
-  border: 1.5px solid #056e60; /* Black border */
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.dropbtn-task {
-  background-color: #ecb468;
-  color: black;
-  padding: 16px;
-  font-size: 16px;
-  border: 1.5px solid #fbbb67; /* Black border */
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dropbtn {
-  border-radius: 50%;
-  width: 60px; /* Increased width */
-  height: 60px; /* Increased height */
-}
-
-.dropbtn-task {
-  border-radius: 10px; /* Rounded corners */
-  width: 100px; /* Width for task node */
-  height: 60px; /* Height for task node */
-  position: relative;
-  background-color: #d89636; /* Light blue background */
-}
-
-.dropbtn-task img {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width: 30px; /* Size of the icon */
-  height: 30px;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #082330;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgb(12, 45, 62);
-  z-index: 1;
-}
-
-.dropdown-content .dropdown-item, .dropdown-content .task-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  cursor: pointer;
-}
-
-.dropdown-content .dropdown-item:hover, .dropdown-content .task-item:hover {
-  background-color: #f8b333;
-}
-
-.dropdown-content .circle {
-  width: 48px; /* Increased width */
-  height: 48px; /* Increased height */
-  border-radius: 50%;
-  margin: 0px;
-  border: 2px solid #056e60;
-  background-color: #056e60; /* Gold for start event */
-}
-
-.dropdown-content .start-event {
-  border: 2px solid #37ff00;
-  background-color: #06594e; /* Gold for start event */
-  width: 48px; /* Reduced width */
-  height: 48px; /* Reduced height */
-}
-
-.dropdown-content .end-event {
-  border: 2px solid #ff1e00;
-  background-color: #f1a84f; /* White for end event */
-  width: 48px; /* Reduced width */
-  height: 48px; /* Reduced height */
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.dropdown:hover .dropbtn {
-  background-color: #038a77;
-}
-.dropdown:hover .dropdown:hover .dropbtn-task {
-  background-color: #f69f34;
 }
 
 .hover-options {
   position: absolute;
-  background: #f69f34;
-  border: 1px solid #183542;
+  background: white;
+  border: 1px solid #ccc;
   padding: 5px;
   display: flex;
   flex-direction: column;
 }
 
-/* Styles for Task Nodes */
-.dropdown-content .task-item {
-  border: 1px solid #f8b333;
-  border-radius: 10px; /* Rounded corners */
-  width: 103px;
-  height: 58px;
+.node-options {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #214250; /* Light blue background */
-  color: #f8b333;
-  font-size: 0px;
+  flex-direction: column;
+}
+
+.node-option {
   cursor: pointer;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  user-select: none;
-  transition: background-color 0.3s ease;
-  margin: 20px 0;
-  position: relative;
+  padding: 5px;
+  margin: 2px 0;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
 }
 
-.dropdown-content .task-item img {
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 100px; /* Size of the icon */
-  height: 55px;
+.node-option.start-node {
+  color: green;
 }
 
-.dropdown-content .task-item:hover {
-  background-color: #fdb36a;
-  color: #f69f34;
-}
-.section-title {
-  font-size: 1em;
-  font-weight: bold;
-  padding: 0.5em 0;
-  border-top: 0.5px solid #838485;
-  border-bottom: 0.5px solid #b5b3b3;
+.node-option.end-node {
+  color: red;
 }
 
-
+.node-option:hover {
+  background-color: #e0e0e0;
+}
