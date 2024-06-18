@@ -1,39 +1,3 @@
-/**import { Component } from '@angular/core';
-//import { Model, ModelElementDetail } from '../shared/model';
-//import { Node, Edge, Connection, addEdge } from 'reactflow';
-//import nodeTypes from '../shared/custom-nodes'; // Adjust the import path as necessary
-
-@Component({
-  selector: 'app-modelling-environment',
-  templateUrl: './modelling-environment.component.html',
-  styleUrls: ['./modelling-environment.component.css']
-})
-export class ModellingEnvironmentComponent {
-
-  model: Model;
-  nodeTypes = nodeTypes;
-
-  constructor() {
-    this.model = new Model('1', 'Default Model');
-  }
-
-  addNode(element: ModelElementDetail) {
-    this.model.addNode(element);
-  }
-
-  onNodesChange(event: { nodes: any[] }) {
-    const nodes = event.nodes;
-    nodes.forEach((node: any) => {
-      this.model.updateNodePosition(node.id, node.position);
-    });
-  }
-
-
-  onEdgesChange(event: any) {
-    this.model.edges = event.edges;
-  }
-}
-*/
 import {Component, EventEmitter, Output, OnInit} from '@angular/core';
 import { Node, Edge, Connection, MarkerType } from 'reactflow';
 

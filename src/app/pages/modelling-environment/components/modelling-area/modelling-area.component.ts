@@ -18,24 +18,182 @@ export class ModellingAreaComponent implements OnChanges {
   contextMenuPosition = { x: 0, y: 0 };
   selectedNodeId: string | null = null;
 
+  editingNodeId: string | null = null;
+  newNodeLabel: string = '';
+
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['nodes']) {
+    if ('nodes' in changes) {
       this.nodes = changes['nodes'].currentValue;
     }
-    if (changes['edges']) {
+    if ('edges' in changes) {
+      this.edges = changes['edges'].currentValue;
+    }
+  }
+
+  onNodesChange(event: any) {
+    this.nodes = event.nodes;
+    this.nodesChange.emit(this.nodes);
+  }
+
+  onEdgesChange(event: any) {
+    this.edges = event.edges;
+    this.edgesChange.emit(this.edges);
+  }
+
+  onConnect(event: any) {
+    const newEdge: Edge = {
+      id: `e${event.source}-${event.target}`,
+      source: event.source,
+      target: event.target,
+      sourceHandle: event.sourceHandle || null,
+      targetHandle: event.targetHandle || null,
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+      },
+    };
+    this.edges = addEdge(newEdge, this.edges);
+    this.edgesChange.emit(this.edges);
+  }
+
+  onRightClick(event: MouseEvent, nodeId?: string) {
+    event.preventDefault();
+    this.contextMenuVisible = true;
+    this.contextMenuPosition = { x: event.clientX, y: event.clientY };
+    if (nodeId) {
+      this.selectedNodeId = nodeId;
+    }
+  }
+
+  onNodeContextMenu(event: any) {
+    const { event: mouseEvent, node } = event;
+    this.onRightClick(mouseEvent, node.id);
+  }
+
+  onDeleteNode() {
+    if (this.selectedNodeId) {
+      this.nodes = this.nodes.filter(node => node.id !== this.selectedNodeId);
+      this.edges = this.edges.filter(edge => edge.source !== this.selectedNodeId && edge.target !== this.selectedNodeId);
+      this.nodesChange.emit(this.nodes);
+      this.edgesChange.emit(this.edges);
+      this.contextMenuVisible = false;
+    }
+  }
+
+  onCancelContextMenu() {
+    this.contextMenuVisible = false;
+    this.selectedNodeId = null;
+  }
+
+  onNodeMouseDown(event: MouseEvent, node: Node): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const initialMousePosition = {
+      x: event.clientX,
+      y: event.clientY
+    };
+
+    const initialNodePosition = {
+      x: node.position.x,
+      y: node.position.y
+    };
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      const offsetX = moveEvent.clientX - initialMousePosition.x;
+      const offsetY = moveEvent.clientY - initialMousePosition.y;
+
+      node.position = {
+        x: initialNodePosition.x + offsetX,
+        y: initialNodePosition.y + offsetY
+      };
+
+      this.nodesChange.emit([...this.nodes]);
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
+
+  onNodeDragStop(event: any) {
+    const updatedNode: Node = event.node;
+    const index = this.nodes.findIndex(n => n.id === updatedNode.id);
+
+    if (index !== -1) {
+      this.nodes[index].position = updatedNode.position;
+      this.nodesChange.emit([...this.nodes]);
+    }
+
+    console.log('Node drag stopped:', updatedNode);
+  }
+
+  onNodeDoubleClick(nodeId: string) {
+    this.editingNodeId = nodeId;
+    const node = this.nodes.find(n => n.id === nodeId);
+    if (node) {
+      this.newNodeLabel = node.data.label;
+    }
+  }
+
+  saveNodeLabel(nodeId: string) {
+    const node = this.nodes.find(n => n.id === nodeId);
+    if (node) {
+      node.data.label = this.newNodeLabel;
+      this.nodesChange.emit([...this.nodes]);
+      this.editingNodeId = null;
+      this.newNodeLabel = '';
+    }
+  }
+
+  cancelEdit() {
+    this.editingNodeId = null;
+    this.newNodeLabel = '';
+  }
+}
+
+
+/**import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
+
+@Component({
+  selector: 'app-modelling-area',
+  templateUrl: './modelling-area.component.html',
+  styleUrls: ['./modelling-area.component.css']
+})
+export class ModellingAreaComponent implements OnChanges {
+  @Input() nodes: Node[] = [];
+  @Input() edges: Edge[] = [];
+  @Output() nodesChange = new EventEmitter<Node[]>();
+  @Output() edgesChange = new EventEmitter<Edge[]>();
+  @Output() connect = new EventEmitter<Connection>();
+  @Output() rightClick = new EventEmitter<{ event: MouseEvent, nodeId: string }>();
+
+  contextMenuVisible: boolean = false;
+  contextMenuPosition = { x: 0, y: 0 };
+  selectedNodeId: string | null = null;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if ('nodes' in changes) {
+      this.nodes = changes['nodes'].currentValue;
+    }
+    if ('edges' in changes) {
       this.edges = changes['edges'].currentValue;
     }
   }
 
   onNodesChange(event: any) {
     const updatedNodes = event.nodes;
-    this.nodes = updatedNodes; // Update local nodes array
+    this.nodes = updatedNodes;
     this.nodesChange.emit(updatedNodes);
   }
 
   onEdgesChange(event: any) {
     const updatedEdges = event.edges;
-    this.edges = updatedEdges; // Update local edges array
+    this.edges = updatedEdges;
     this.edgesChange.emit(updatedEdges);
   }
 
@@ -83,7 +241,56 @@ export class ModellingAreaComponent implements OnChanges {
     this.contextMenuVisible = false;
     this.selectedNodeId = null;
   }
-}
+
+  onNodeDragStop(event: any) {
+    const updatedNode: Node = event.node;
+    const index = this.nodes.findIndex(n => n.id === updatedNode.id);
+
+    if (index !== -1) {
+      this.nodes[index].position = updatedNode.position;
+      this.nodesChange.emit([...this.nodes]);
+    }
+
+    console.log('Node drag stopped:', updatedNode);
+  }
+  onNodeMouseDown(event: MouseEvent, node: Node): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const initialMousePosition = {
+      x: event.clientX,
+      y: event.clientY
+    };
+
+    const initialNodePosition = {
+      x: node.position.x,
+      y: node.position.y
+    };
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      const offsetX = moveEvent.clientX - initialMousePosition.x;
+      const offsetY = moveEvent.clientY - initialMousePosition.y;
+
+      node.position = {
+        x: initialNodePosition.x + offsetX,
+        y: initialNodePosition.y + offsetY
+      };
+
+      this.nodesChange.emit([...this.nodes]);
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    // Add event listeners to the node element, not the whole document
+    event.target?.addEventListener('mousemove', onMouseMove as EventListener);
+    event.target?.addEventListener('mouseup', onMouseUp as EventListener);
+  }
+
+}*/
+
 
 
 /**import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';

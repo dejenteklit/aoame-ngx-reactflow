@@ -1,6 +1,24 @@
 <div class="palette-container">
+  <label for="language-select">Select Language:</label>
+  <select id="language-select" (change)="onLanguageChange($event)">
+    <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
+  </select>
+  <br>
+  <label for="view-select">Select View:</label>
+  <select id="view-select" (change)="onViewChange($event)">
+    <option *ngFor="let view of views" [value]="view">{{ view }}</option>
+  </select>
+  <div *ngIf="selectedView === 'Process Modeling View'">
+    <app-palette-area
+      (addNode)="onAddNode($event)"
+      (addEdge)="onAddEdge($event)"
+      (connect)="onConnect($event)">
+    </app-palette-area>
+  </div>
+</div>
+<!---<div class="palette-container">
   <div *ngFor="let element of elements" class="palette-item">
-    <!-- Non Event Node -->
+
     <div class="dropdown" *ngIf="element.type === 'nonEvent'">
       <div class="section-title">
         Events
@@ -19,7 +37,6 @@
       </div>
     </div>
 
-    <!-- Task Node -->
     <div class="dropdown" *ngIf="element.type === 'task'">
       <div class="section-title">
         Activities
@@ -31,15 +48,16 @@
       </button>
       <div class="dropdown-content">
         <div class="task-item" *ngIf="showTaskOptions" (click)="onOptionClick(element, 'manualTask')">
-          <img src="assets/Manual_Task.png" alt="Manual Task" /> <!-- Adjust image path accordingly -->
+          <img src="assets/Manual_Task.png" alt="Manual Task" />
         </div>
         <div class="task-item" *ngIf="showTaskOptions" (click)="onOptionClick(element, 'serviceTask')">
-          <img src="assets/Service_Task.png" alt="Service Task" /> <!-- Adjust image path accordingly -->
+          <img src="assets/Service_Task.png" alt="Service Task" />
         </div>
       </div>
     </div>
   </div>
 </div>
+</div>--->
 
 
 

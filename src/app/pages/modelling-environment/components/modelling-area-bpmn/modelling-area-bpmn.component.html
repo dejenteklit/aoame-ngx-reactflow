@@ -1,0 +1,54 @@
+<div style="display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: row;">
+    <mat-form-field appearance="fill">
+      <mat-select placeholder="Instantiation as" class="mat-select">
+        <mat-option value="instance">Instance</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button>Validate SHACL</button>
+  </div>
+  <div class="flex-container" fxLayout="row">
+    <div class="modelling-area" style="width: 78.50vw; display: flex; flex-direction: row;">
+      <div style="flex-grow: 1; width: 78.50vw; height: 100vh; border: 0.25px solid black; box-sizing: border-box;">
+        <ngx-reactflow
+          [nodes]="nodes"
+          [edges]="edges"
+          [fitView]="true"
+          style="width: 100%; height: 100%;">
+        </ngx-reactflow>
+      </div>
+  </div>
+</div>
+<!---<div style="display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: row;">
+    <mat-form-field appearance="fill">
+      <mat-select placeholder="Instantiation as" class="mat-select">
+        <mat-option value="instance">Instance</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button>Validate SHACL</button>
+  </div>
+  <div class="flex-container" fxLayout="row">
+    <div class="modelling-area" style="width: 78.50vw; display: flex; flex-direction: row;">
+      <div style="flex-grow: 1; width: 78.50vw; height: 100vh; border: 0.25px solid black; box-sizing: border-box;">
+        <ngx-reactflow
+          [nodes]="nodes"
+          [edges]="edges"
+          [fitView]="true"
+          style="width: 100%; height: 100%;">
+          <ng-template #nodeTemplate let-node>
+            <div class="node" [style.left.px]="node.position.x" [style.top.px]="node.position.y"
+                 (contextmenu)="onNodeContextMenu({ event: $event, node })"
+                 (mousedown)="onNodeMouseDown($event, node)">
+              {{ node.data.label }}
+            </div>
+          </ng-template>
+        </ngx-reactflow>
+      </div>
+      <div *ngIf="contextMenuVisible" [ngStyle]="{'top.px': contextMenuPosition.y, 'left.px': contextMenuPosition.x}" class="context-menu">
+        <button (click)="onDeleteNode()">Delete Node</button>
+        <button (click)="onCancelContextMenu()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  </div>-->

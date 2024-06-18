@@ -12,7 +12,7 @@
     </app-modeling-area>
   </div>
 </div>-->
-<div class="modelling-environment">
+<!--<div class="modelling-environment">
   <app-palette-area
     (addNode)="onAddNode($event)"
     (addEdge)="onAddEdge($event)">
@@ -26,5 +26,23 @@
     (connect)="handleConnect($event)">
   </app-modelling-area>
 </div>
+</div>-->
+
+<div fxLayout="row" class="flex-container" style="flex-direction: row; box-sizing: border-box; display: flex;">
+  <div class="palette-area">
+    <app-palette-area-bpmn
+      (addNode)="onAddNode($event)"
+      (addEdge)="onAddEdge($event)">
+    </app-palette-area-bpmn>
+  </div>
+  <div class="modelling-area">
+    <app-modelling-area-bpmn
+        [nodes]="nodes"
+        [edges]="edges"
+        style="width: 100%; height: 100%;">
+    </app-modelling-area-bpmn>
+  </div>
 </div>
+
+
 

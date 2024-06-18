@@ -1,7 +1,117 @@
-import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
-import { Node, Edge, Position, Connection, MarkerType } from 'reactflow';
-import ReactFlow from "react-flow-renderer";
 
+import {Component, EventEmitter, Output, OnInit, Input} from '@angular/core';
+import {Node, Edge, Connection, addEdge, MarkerType, Position} from 'reactflow';
+import ReactFlow from "react-flow-renderer";
+interface PaletteElement {
+  name: string;
+  type: string;
+}
+
+/*
+interface BpmnElement {
+  name: string;
+  type: string;
+  isConnectable: boolean;
+  sourcePosition: string;
+  targetPosition: string;
+}*/
+
+@Component({
+  selector: 'app-palette-area-bpmn',
+  templateUrl: './palette-area-bpmn.component.html',
+  styleUrls: ['./palette-area-bpmn.component.css']
+})
+export class PaletteAreaBPMNComponent implements OnInit {
+  languages = ['BPMN 2.0', 'Other Language'];
+  views = ['Process Modeling View', 'Other View'];
+  elements: PaletteElement[] = [];
+  hoveredElement: PaletteElement | null = null;
+  selectedView: string = '';
+  @Input() nodes: Node[] = [];
+  @Input() edges: Edge[] = [];
+  @Output() addNode = new EventEmitter<Node>();
+  @Output() addEdge = new EventEmitter<Edge>();
+  @Output() connect = new EventEmitter<Connection>();
+  @Output() nodesChange = new EventEmitter<Node[]>();
+  @Output() edgesChange = new EventEmitter<Edge[]>();
+  selectedSourceNodeId: string | null = null;
+  selectedTargetNodeId: string | null = null;
+  node: string | undefined;
+
+
+  constructor() {
+  }
+
+  ngOnInit() {
+  }
+
+  onLanguageChange(event: any) {
+    const selectedLanguage = event.target.value;
+  }
+
+  onViewChange(event: any) {
+    this.selectedView = event.target.value;
+  }
+
+  onAddNode(node: Node) {
+    this.addNode.emit(node);
+  }
+
+  onAddEdge(edge: Edge) {
+    this.addEdge.emit(edge);
+  }
+
+  onSelectNode(nodeId: string) {
+    if (!this.selectedSourceNodeId) {
+      this.selectedSourceNodeId = nodeId;
+    } else {
+      this.selectedTargetNodeId = nodeId;
+      this.createEdge();
+    }
+  }
+
+  createEdge() {
+    if (this.selectedSourceNodeId && this.selectedTargetNodeId) {
+      const newEdge: Edge = {
+        id: `e${this.selectedSourceNodeId}-${this.selectedTargetNodeId}`,
+        source: this.selectedSourceNodeId,
+        target: this.selectedTargetNodeId,
+        sourceHandle: null,
+        targetHandle: null
+      };
+      this.addEdge.emit(newEdge);
+      this.resetSelection();
+    }
+  }
+
+  resetSelection() {
+    this.selectedSourceNodeId = null;
+    this.selectedTargetNodeId = null;
+  }
+
+  onConnect(event: any) {
+    const params: Connection = {
+      source: event.source,
+      sourceHandle: event.sourceHandle,
+      target: event.target,
+      targetHandle: event.targetHandle
+    };
+    const newEdge: Edge = {
+      id: `e${event.source}-${event.target}`,
+      source: event.source,
+      target: event.target,
+      sourceHandle: event.sourceHandle,
+      targetHandle: event.targetHandle,
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+      },
+    };
+    this.edges = addEdge(newEdge, this.edges);
+    this.edgesChange.emit(this.edges);
+  }
+}
+/***import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
+import { Node, Edge, Position, Connection, MarkerType } from 'reactflow';
 interface BpmnElement {
   name: string;
   type: string;
@@ -15,7 +125,7 @@ interface BpmnElement {
   templateUrl: './palette-area-bpmn.component.html',
   styleUrls: ['./palette-area-bpmn.component.css']
 })
-export class PaletteAreaBpmnComponent implements OnInit {
+export class PaletteAreaBPMNComponent implements OnInit  {
   elements: BpmnElement[] = [
     { name: 'Non Event', type: 'nonEvent', isConnectable: true, sourcePosition: 'null', targetPosition: 'null' },
     { name: 'Task', type: 'task', isConnectable: true, sourcePosition: 'null', targetPosition: 'null' }
@@ -176,7 +286,7 @@ export class PaletteAreaBpmnComponent implements OnInit {
       this.addEdge.emit(newEdge);
     }
   }
-}
+}*/
 
 
 /**import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
