@@ -1,5 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
+import _ from 'lodash';
+import { InstantiationTargetType } from 'src/app/shared/models/InstantiationTargetType.model';
 
 @Component({
   selector: 'app-modelling-area',
@@ -9,10 +11,11 @@ import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
 export class ModellingAreaComponent implements OnChanges {
   @Input() nodes: Node[] = [];
   @Input() edges: Edge[] = [];
-  @Output() nodesChange = new EventEmitter<Node[]>();
-  @Output() edgesChange = new EventEmitter<Edge[]>();
+  //@Output() nodesChange = new EventEmitter<Node[]>();
+  //@Output() edgesChange = new EventEmitter<Edge[]>();
   @Output() connect = new EventEmitter<Connection>();
   @Output() rightClick = new EventEmitter<{ event: MouseEvent, nodeId: string }>();
+
 
   contextMenuVisible: boolean = false;
   contextMenuPosition = { x: 0, y: 0 };
@@ -20,6 +23,14 @@ export class ModellingAreaComponent implements OnChanges {
 
   editingNodeId: string | null = null;
   newNodeLabel: string = '';
+
+
+  selectedInstantiationType: InstantiationTargetType = InstantiationTargetType.INSTANCE;
+  nodesChange: any;
+
+  getInstantiationTypes(): InstantiationTargetType[] {
+    return _.values(InstantiationTargetType);
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if ('nodes' in changes) {
@@ -29,8 +40,16 @@ export class ModellingAreaComponent implements OnChanges {
       this.edges = changes['edges'].currentValue;
     }
   }
-
-  onNodesChange(event: any) {
+  onNodeDoubleClick(event: any) {
+    const clickedNode = event.node;
+    const newLabel = prompt('Enter new label:', clickedNode.data.label ?? '');
+    if (newLabel !== null) {
+      const updatedNode = { ...clickedNode, data: { ...clickedNode.data, label: newLabel } };
+      this.nodes = this.nodes.map(n => (n.id === clickedNode.id ? updatedNode : n));
+      this.nodesChange.emit(this.nodes);
+    }
+  }
+  /*onNodesChange(event: any) {
     this.nodes = event.nodes;
     this.nodesChange.emit(this.nodes);
   }
@@ -38,9 +57,9 @@ export class ModellingAreaComponent implements OnChanges {
   onEdgesChange(event: any) {
     this.edges = event.edges;
     this.edgesChange.emit(this.edges);
-  }
+  }*/
 
-  onConnect(event: any) {
+  /*onConnect(event: any) {
     const newEdge: Edge = {
       id: `e${event.source}-${event.target}`,
       source: event.source,
@@ -53,38 +72,28 @@ export class ModellingAreaComponent implements OnChanges {
     };
     this.edges = addEdge(newEdge, this.edges);
     this.edgesChange.emit(this.edges);
-  }
+  }*/
 
-  onRightClick(event: MouseEvent, nodeId?: string) {
+  /*onRightClick(event: MouseEvent, nodeId?: string) {
     event.preventDefault();
     this.contextMenuVisible = true;
     this.contextMenuPosition = { x: event.clientX, y: event.clientY };
     if (nodeId) {
       this.selectedNodeId = nodeId;
     }
-  }
+  }*/
 
-  onNodeContextMenu(event: any) {
+ /* onNodeContextMenu(event: any) {
     const { event: mouseEvent, node } = event;
     this.onRightClick(mouseEvent, node.id);
-  }
+  }*/
 
-  onDeleteNode() {
-    if (this.selectedNodeId) {
-      this.nodes = this.nodes.filter(node => node.id !== this.selectedNodeId);
-      this.edges = this.edges.filter(edge => edge.source !== this.selectedNodeId && edge.target !== this.selectedNodeId);
-      this.nodesChange.emit(this.nodes);
-      this.edgesChange.emit(this.edges);
-      this.contextMenuVisible = false;
-    }
-  }
-
-  onCancelContextMenu() {
+  /*onCancelContextMenu() {
     this.contextMenuVisible = false;
     this.selectedNodeId = null;
-  }
+  }*/
 
-  onNodeMouseDown(event: MouseEvent, node: Node): void {
+  /*onNodeMouseDown(event: MouseEvent, node: Node): void {
     event.preventDefault();
     event.stopPropagation();
 
@@ -117,42 +126,8 @@ export class ModellingAreaComponent implements OnChanges {
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-  }
+  }*/
 
-  onNodeDragStop(event: any) {
-    const updatedNode: Node = event.node;
-    const index = this.nodes.findIndex(n => n.id === updatedNode.id);
-
-    if (index !== -1) {
-      this.nodes[index].position = updatedNode.position;
-      this.nodesChange.emit([...this.nodes]);
-    }
-
-    console.log('Node drag stopped:', updatedNode);
-  }
-
-  onNodeDoubleClick(nodeId: string) {
-    this.editingNodeId = nodeId;
-    const node = this.nodes.find(n => n.id === nodeId);
-    if (node) {
-      this.newNodeLabel = node.data.label;
-    }
-  }
-
-  saveNodeLabel(nodeId: string) {
-    const node = this.nodes.find(n => n.id === nodeId);
-    if (node) {
-      node.data.label = this.newNodeLabel;
-      this.nodesChange.emit([...this.nodes]);
-      this.editingNodeId = null;
-      this.newNodeLabel = '';
-    }
-  }
-
-  cancelEdit() {
-    this.editingNodeId = null;
-    this.newNodeLabel = '';
-  }
 }
 
 

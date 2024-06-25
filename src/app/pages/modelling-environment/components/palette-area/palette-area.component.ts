@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
 import { Node, Edge, Position, Connection, MarkerType } from 'reactflow';
-import ReactFlow from "react-flow-renderer";
 
 interface BpmnElement {
   name: string;
@@ -36,11 +35,12 @@ export class PaletteAreaComponent implements OnInit {
 
   @Output() addNode = new EventEmitter<Node>();
   @Output() addEdge = new EventEmitter<Edge>();
-  @Output() connect = new EventEmitter<Connection>();
-  @Input() nodes: Node[] = [];
-  @Input() edges: Edge[] = [];
+  //@Output() connect = new EventEmitter<Connection>();
   @Output() nodesChange = new EventEmitter<Node[]>();
   @Output() edgesChange = new EventEmitter<Edge[]>();
+
+  nodes: Node[] = [];
+  edges: Edge[] = [];
 
   constructor() {
   }
@@ -82,7 +82,7 @@ export class PaletteAreaComponent implements OnInit {
       newNode = {
         id: nodeId,
         type: eventType,
-        data: {label: ''},
+        data: { label: '' }, // Add an empty label property here
         position: newNodePosition,
         sourcePosition: Position.Right,
         draggable: true,
@@ -182,6 +182,7 @@ export class PaletteAreaComponent implements OnInit {
       this.addEdge.emit(newEdge);
     }
   }
+
 }
 /***import {Component, EventEmitter, Output, OnInit, Input} from '@angular/core';
 import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';

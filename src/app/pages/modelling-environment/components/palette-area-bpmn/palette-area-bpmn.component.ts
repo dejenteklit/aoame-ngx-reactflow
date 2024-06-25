@@ -1,20 +1,297 @@
+import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
+import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
+import { PaletteElementModel } from 'src/app/shared/models/PaletteElement.model';
 
-import {Component, EventEmitter, Output, OnInit, Input} from '@angular/core';
-import {Node, Edge, Connection, addEdge, MarkerType, Position} from 'reactflow';
-import ReactFlow from "react-flow-renderer";
+
+@Component({
+  selector: 'app-palette-area-bpmn',
+  templateUrl: './palette-area-bpmn.component.html',
+  styleUrls: ['./palette-area-bpmn.component.css']
+})
+export class PaletteAreaBPMNComponent implements OnInit {
+  languages = ['BPMN 2.0', 'Other Language'];
+  views = ['Process Modeling View', 'Other View'];
+  //elements: PaletteElement[] = [];
+  elements:PaletteElementModel[] = [];
+ hoveredElement: PaletteElementModel| null = null;
+  selectedView: string = '';
+  selectedLanguage: string = '';
+  @Input() nodes: Node[] = [];
+  @Input() edges: Edge[] = [];
+  @Output() addNode = new EventEmitter<Node>();
+  @Output() addEdge = new EventEmitter<Edge>();
+  //@Output() connect = new EventEmitter<Connection>();
+  //@Output() edgesChange = new EventEmitter<Edge[]>();
+
+  //newNodeLabel: any;
+  //editingNodeId: string | undefined;
+  @Output() sendElementFromPalette = new EventEmitter<PaletteElementModel>();
+
+  // Example method that emits PaletteElementModel
+  emitElementToCanvas() {
+    const element: PaletteElementModel = {
+      id: '1',
+      uuid: 'uuid-1',
+      label: 'Element from Palette',
+      paletteCategory: 'someCategory',
+      categoryLabel: '',
+      parentElement: '',
+      parentLanguageClass: '',
+      hiddenFromPalette: false,
+      childElements: [],
+      representedLanguageClass: '',
+      representedDomainClass: [],
+      //languageSubclasses: [],
+      languagePrefix: '',
+      comment: '',
+      shape: '',
+      backgroundColor: '',
+      height: 0,
+      width: 0,
+      labelPosition: '',
+      iconURL: '',
+      iconPosition: '',
+      usesImages: false,
+      imageURL: '',
+      thumbnailURL: '',
+      toArrow: '',
+      fromArrow: '',
+      arrowStroke: '',
+      type: ''
+    };
+    this.sendElementFromPalette.emit(element);
+  }
+  constructor() {}
+
+  ngOnInit() {}
+
+  onLanguageChange(event: any) {
+    this.selectedLanguage = event.value;
+    console.log('Selected Language:', this.selectedLanguage);
+  }
+
+  onViewChange(event: any) {
+    this.selectedView = event.value;
+    console.log('Selected View:', this.selectedView);
+  }
+
+  addNodeToModel(node: Node) {
+    this.addNode.emit(node);
+  }
+  /*addNodeToModel(event: any) {
+    const nodeType: string = event?.type || ''; // Handle undefined or null
+    const position: any = event?.position || { x: 0, y: 0 }; // Example default position
+
+    const newNodeData: Node<any, string> = {
+      id: this.generateUniqueId(),
+      type: nodeType,
+      position: position,
+      data: {},
+    };
+
+    this.addNode.emit(newNodeData);
+    this.newNodeLabel = '';
+  }
+
+  generateUniqueId(): string {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }*/
+
+  onAddEdge(edge: Edge) {
+    this.addEdge.emit(edge);
+  }
+
+  /*onConnect(event: any) {
+    const params: Connection = {
+      source: event.source,
+      sourceHandle: event.sourceHandle,
+      target: event.target,
+      targetHandle: event.targetHandle
+    };
+    const newEdge: Edge = {
+      id: `e${event.source}-${event.target}`,
+      source: event.source,
+      target: event.target,
+      sourceHandle: event.sourceHandle,
+      targetHandle: event.targetHandle,
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+      },
+    };
+    this.edges = addEdge(newEdge, this.edges);
+    this.edgesChange.emit(this.edges);
+  }*/
+
+}
+/**
+mport { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
+import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
+
+interface PaletteElement {
+  name: string;
+  type: string;
+  data: {
+    label: string;
+  };
+}
+
+@Component({
+  selector: 'app-palette-area-bpmn',
+  templateUrl: './palette-area-bpmn.component.html',
+  styleUrls: ['./palette-area-bpmn.component.css']
+})
+export class PaletteAreaBPMNComponent implements OnInit {
+  languages = ['BPMN 2.0', 'Other Language'];
+  views = ['Process Modeling View', 'Other View'];
+  elements: PaletteElement[] = [];
+  hoveredElement: PaletteElement | null = null;
+  selectedView: string = '';
+  selectedLanguage: string = '';
+  newNodeLabel: any;
+
+  @Input() nodes: Node[] = []; // Receives nodes from parent component
+  @Input() edges: Edge[] = []; // Receives edges from parent component
+  @Output() addNode = new EventEmitter<Node>(); // Emits event to add a node
+  @Output() addEdge = new EventEmitter<Edge>(); // Emits event to add an edge
+  @Output() connect = new EventEmitter<Connection>(); // Emits event on connection
+  @Output() edgesChange = new EventEmitter<Edge[]>(); // Emits event when edges change
+
+// Define newNodeLabel as string
+  editingNodeId: string | undefined;
+
+  constructor() {}
+
+  ngOnInit() {}
+
+  onLanguageChange(event: any) {
+    this.selectedLanguage = event.value;
+    console.log('Selected Language:', this.selectedLanguage);
+  }
+
+  onViewChange(event: any) {
+    this.selectedView = event.value;
+    console.log('Selected View:', this.selectedView);
+  }
+
+  addNodeToModel(event: any) {
+    const nodeType: string = event?.type || ''; // Handle undefined or null
+    const position: any = event?.position || { x: 0, y: 0 }; // Example default position
+    const newNodeData: Node<any, string> = {
+      id: this.generateUniqueId(),
+      type: nodeType,
+      position: position,
+      data: {},
+    };
+    this.addNode.emit(newNodeData);
+    this.newNodeLabel = '';
+  }
+
+  generateUniqueId(): string {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+
+  onAddEdge(edge: Edge) {
+    this.addEdge.emit(edge);
+  }
+
+  onConnect(event: any) {
+    const newEdge: Edge = {
+      id: `e${event.source}-${event.target}`,
+      source: event.source,
+      target: event.target,
+      sourceHandle: event.sourceHandle,
+      targetHandle: event.targetHandle,
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+      },
+    };
+    this.edges = addEdge(newEdge, this.edges);
+    this.edgesChange.emit(this.edges);
+  }
+}
+ */
+/**import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
+import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
+
 interface PaletteElement {
   name: string;
   type: string;
 }
 
-/*
-interface BpmnElement {
+@Component({
+  selector: 'app-palette-area-bpmn',
+  templateUrl: './palette-area-bpmn.component.html',
+  styleUrls: ['./palette-area-bpmn.component.css']
+})
+export class PaletteAreaBPMNComponent implements OnInit {
+  languages = ['BPMN 2.0', 'Other Language'];
+  views = ['Process Modeling View', 'Other View'];
+  elements: PaletteElement[] = [];
+  hoveredElement: PaletteElement | null = null;
+  selectedView: string = '';
+  selectedLanguage: string = '';
+
+  @Input() nodes: Node[] = [];
+  @Input() edges: Edge[] = [];
+  @Output() addNode = new EventEmitter<Node>();
+  @Output() addEdge = new EventEmitter<Edge>();
+  @Output() connect = new EventEmitter<Connection>();
+  @Output() edgesChange = new EventEmitter<Edge[]>();
+  selectedSourceNodeId: string | null = null;
+  selectedTargetNodeId: string | null = null;
+
+  constructor() {}
+
+  ngOnInit() {}
+
+  onLanguageChange(event: any) {
+    this.selectedLanguage = event.value;
+    console.log('Selected Language:', this.selectedLanguage);
+  }
+
+  onViewChange(event: any) {
+    this.selectedView = event.value;
+    console.log('Selected View:', this.selectedView);
+  }
+
+  onAddNode(node: Node) {
+    this.addNode.emit(node);
+  }
+
+  onAddEdge(edge: Edge) {
+    this.addEdge.emit(edge);
+  }
+
+  onConnect(event: any) {
+    const params: Connection = {
+      source: event.source,
+      sourceHandle: event.sourceHandle,
+      target: event.target,
+      targetHandle: event.targetHandle
+    };
+    const newEdge: Edge = {
+      id: `e${event.source}-${event.target}`,
+      source: event.source,
+      target: event.target,
+      sourceHandle: event.sourceHandle,
+      targetHandle: event.targetHandle,
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+      },
+    };
+    this.edges = addEdge(newEdge, this.edges);
+    this.edgesChange.emit(this.edges);
+  }
+}
+
+/***import {Component, EventEmitter, Output, OnInit, Input} from '@angular/core';
+import {Node, Edge, Connection, addEdge, MarkerType, Position} from 'reactflow';
+
+interface PaletteElement {
   name: string;
   type: string;
-  isConnectable: boolean;
-  sourcePosition: string;
-  targetPosition: string;
-}*/
+}
+
 
 @Component({
   selector: 'app-palette-area-bpmn',
@@ -32,7 +309,7 @@ export class PaletteAreaBPMNComponent implements OnInit {
   @Output() addNode = new EventEmitter<Node>();
   @Output() addEdge = new EventEmitter<Edge>();
   @Output() connect = new EventEmitter<Connection>();
-  @Output() nodesChange = new EventEmitter<Node[]>();
+   //@Output() nodesChange = new EventEmitter<Node[]>();
   @Output() edgesChange = new EventEmitter<Edge[]>();
   selectedSourceNodeId: string | null = null;
   selectedTargetNodeId: string | null = null;
@@ -57,37 +334,40 @@ export class PaletteAreaBPMNComponent implements OnInit {
     this.addNode.emit(node);
   }
 
+
   onAddEdge(edge: Edge) {
     this.addEdge.emit(edge);
   }
 
-  onSelectNode(nodeId: string) {
-    if (!this.selectedSourceNodeId) {
-      this.selectedSourceNodeId = nodeId;
-    } else {
-      this.selectedTargetNodeId = nodeId;
-      this.createEdge();
-    }
-  }
 
-  createEdge() {
-    if (this.selectedSourceNodeId && this.selectedTargetNodeId) {
-      const newEdge: Edge = {
-        id: `e${this.selectedSourceNodeId}-${this.selectedTargetNodeId}`,
-        source: this.selectedSourceNodeId,
-        target: this.selectedTargetNodeId,
-        sourceHandle: null,
-        targetHandle: null
-      };
-      this.addEdge.emit(newEdge);
-      this.resetSelection();
+    onSelectNode(nodeId: string) {
+      if (!this.selectedSourceNodeId) {
+        this.selectedSourceNodeId = nodeId;
+      } else {
+        this.selectedTargetNodeId = nodeId;
+        this.createEdge();
+      }
     }
-  }
 
-  resetSelection() {
-    this.selectedSourceNodeId = null;
-    this.selectedTargetNodeId = null;
-  }
+    createEdge() {
+      if (this.selectedSourceNodeId && this.selectedTargetNodeId) {
+        const newEdge: Edge = {
+          id: `e${this.selectedSourceNodeId}-${this.selectedTargetNodeId}`,
+          source: this.selectedSourceNodeId,
+          target: this.selectedTargetNodeId,
+          sourceHandle: null,
+          targetHandle: null
+        };
+        this.addEdge.emit(newEdge);
+        //this.resetSelection();
+      }
+
+
+   resetSelection() {
+     this.selectedSourceNodeId = null;
+     this.selectedTargetNodeId = null;
+   }
+
 
   onConnect(event: any) {
     const params: Connection = {
@@ -109,7 +389,7 @@ export class PaletteAreaBPMNComponent implements OnInit {
     this.edges = addEdge(newEdge, this.edges);
     this.edgesChange.emit(this.edges);
   }
-}
+}*/
 /***import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
 import { Node, Edge, Position, Connection, MarkerType } from 'reactflow';
 interface BpmnElement {

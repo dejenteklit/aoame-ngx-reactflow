@@ -1,3 +1,131 @@
+<!--<div style="display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: row;">
+    <mat-form-field appearance="fill">
+      <mat-select placeholder="Instantiation as" class="mat-select">
+        <mat-option value="instance">Instance</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button (click)="validateSHACL()">Validate SHACL</button>
+  </div>
+  <div class="flex-container" fxLayout="row">
+    <div class="modelling-area" style="width: 78.50vw; display: flex; flex-direction: row;">
+      <div style="flex-grow: 1; width: 78.50vw; height: 100vh; border: 0.25px solid black; box-sizing: border-box;">
+        <ngx-reactflow
+          reactFlowEvents
+          [nodes]="nodes"
+          [edges]="edges"
+          [fitView]="true"
+          (nodesChange)="onNodesChange($event)"
+          (edgesChange)="onEdgesChange($event)"
+          (nodeResize)="handleNodeResizing($event.detail)"
+          (nodeMove)="handleNodeMove($event.detail)"
+          (nodeLink)="handleNodeLinking($event.detail)"
+          (nodeDeleted)="handleNodeDeleted($event.detail.nodeId)"
+          (nodeTextEditing)="handleNodeTextEditing($event.detail.nodeId, $event.detail.newText)"
+        ></ngx-reactflow>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+
+<!--<div class="modelling-area" style="width: 78.50vw; display: flex; flex-direction: row;">
+  <div style="display: flex; flex-direction: column;">
+    <div style="display: flex; flex-direction: row;">
+      <mat-form-field appearance="fill">
+        <mat-select placeholder="Instantiation as" class="mat-select">
+          <mat-option value="instance">Instance</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-button>Validate SHACL</button>
+    </div>
+    <div class="flex-container" fxLayout="row">
+      <div style="flex-grow: 1; width: 81.35vw; height: 100vh; border: 0.20px solid black; box-sizing: border-box;">
+        <ngx-reactflow
+          [nodes]="nodes"
+          [edges]="edges"
+          [fitView]="true"
+          (nodesChange)="onNodesChange($event)"
+          (edgesChange)="onEdgesChange($event)"
+          (nodeDoubleClick)="handleDoubleClick($event)">
+        </ngx-reactflow>
+        <div *ngIf="editingNodeId" class="edit-label-overlay">
+          <input type="text" [(ngModel)]="newNodeLabel" (keyup.enter)="saveNodeLabel(editingNodeId)" (blur)="cancelEdit()" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+<div style="display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: row;">
+    <mat-form-field appearance="fill">
+      <mat-select placeholder="Instantiation as" class="mat-select">
+        <mat-option value="instance">Instance</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button>Validate SHACL</button>
+  </div>
+  <div style="display: flex; flex-direction: row;">
+    <div style="flex-grow: 1; height: 700px;">
+      <ngx-reactflow
+        [nodes]="nodes"
+        [edges]="edges"
+        [fitView]="true"
+        [style]="{ width: '100%', height: '500px' }"
+        (nodeDragEnd)="onNodeDragEnd($event)">
+      </ngx-reactflow>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!--<div style="display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: row;">
+    <mat-form-field appearance="fill">
+      <mat-select placeholder="Instantiation as" class="mat-select">
+        <mat-option value="instance">Instance</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-button>Validate SHACL</button>
+  </div>
+  <div style="display: flex; flex-direction: row;">
+    <div style="flex-grow: 1; height: 700px;">
+
+      <ngx-reactflow
+        [nodes]="nodes"
+        [edges]="edges"
+        [fitView]="true"
+        (nodesChange)="onNodesChange($event)"
+        (edgesChange)="onEdgesChange($event)"
+        (nodeDoubleClick)="handleDoubleClick($event)">
+      </ngx-reactflow>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="contextMenuVisible" [ngStyle]="{ top: contextMenuPosition.y + 'px', left: contextMenuPosition.x + 'px' }" class="context-menu">
+  <button mat-menu-item (click)="onDeleteNode()">Delete Node</button>
+  <button mat-menu-item (click)="onCancelContextMenu()">Cancel</button>
+</div>
+
+<div *ngIf="editingNodeId">
+  <h3>Edit Node Label</h3>
+  <mat-form-field appearance="fill">
+    <input matInput [(ngModel)]="newNodeLabel" placeholder="Enter new label" />
+  </mat-form-field>
+  <button mat-button (click)="saveNodeLabel(editingNodeId)">Save</button>
+  <button mat-button (click)="cancelEdit()">Cancel</button>
+</div>-->
+
+
+
+
+
+<!--<div class="modelling-area" style="width: 78.50vw; display: flex; flex-direction: row;">
 <div style="display: flex; flex-direction: column;">
   <div style="display: flex; flex-direction: row;">
     <mat-form-field appearance="fill">
@@ -8,17 +136,18 @@
     <button mat-button>Validate SHACL</button>
   </div>
   <div class="flex-container" fxLayout="row">
-    <div class="modelling-area" style="width: 78.50vw; display: flex; flex-direction: row;">
-      <div style="flex-grow: 1; width: 78.50vw; height: 100vh; border: 0.25px solid black; box-sizing: border-box;">
+      <div style="flex-grow: 1; width: 81.35vw; height: 100vh; border: 0.20px solid black; box-sizing: border-box;">
         <ngx-reactflow
           [nodes]="nodes"
           [edges]="edges"
           [fitView]="true"
-          style="width: 100%; height: 100%;">
+          (nodesChange)="onNodesChange($event)"
+          (edgesChange)="onEdgesChange($event)">
         </ngx-reactflow>
       </div>
   </div>
 </div>
+</div>-->
 <!---<div style="display: flex; flex-direction: column;">
   <div style="display: flex; flex-direction: row;">
     <mat-form-field appearance="fill">

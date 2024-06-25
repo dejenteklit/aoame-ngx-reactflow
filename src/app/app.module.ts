@@ -32,7 +32,6 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {ToastrModule} from "ngx-toastr";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-
 import {
   ModellingAreaBPMNComponent
 } from "./pages/modelling-environment/components/modelling-area-bpmn/modelling-area-bpmn.component";
@@ -43,6 +42,7 @@ const appRoutes: Routes = [
   {path: 'modeller', component: ModellingEnvironmentComponent},
 
 ];
+
 
 @NgModule({
   declarations: [
@@ -64,7 +64,6 @@ const appRoutes: Routes = [
     //RouterModule.forRoot(appRoutes, {}),
     HttpClientModule,
     //FlexLayoutModule,
-    //ContextMenuModule,
     MatListModule,
     MatButtonModule,
     MatToolbarModule,
@@ -94,6 +93,7 @@ const appRoutes: Routes = [
     ToastrModule.forRoot(),
     MatProgressSpinnerModule,
     //NgMultiSelectDropDownModule,
+    //ContextMenuModule,
   ],
   providers: [
     MatSnackBar,

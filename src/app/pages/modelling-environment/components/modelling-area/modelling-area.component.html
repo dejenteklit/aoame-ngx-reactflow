@@ -54,7 +54,7 @@
     </div>
   </div>
 </div>-->
-<div class="flex-container" fxLayout="row">
+<!--<div class="flex-container" fxLayout="row">
   <div class="modelling-area" style="width: 78.50vw; display: flex; flex-direction: row;">
     <div style="flex-grow: 1; width: 78.50vw; height: 100vh; border: 0.25px solid black; box-sizing: border-box;">
       <ngx-reactflow
@@ -81,6 +81,26 @@
       <button (click)="onCancelContextMenu()">Cancel</button>
     </div>
   </div>
+</div>-->
+<!--<div class="flex-container" fxLayout="row">
+  <div class="modelling-area" style="width: 78.50vw; display: flex; flex-direction: row;">
+  </div>
+</div>-->
+<<div style="display: flex; flex-direction: column">
+  <div style="display: flex; flex-direction: row">
+    <mat-form-field>
+      <mat-select
+        placeholder="Instantiation as"
+        [(ngModel)]="selectedInstantiationType">
+        <mat-option *ngFor="let instantiationType of getInstantiationTypes()" [value]="instantiationType">{{instantiationType}}</mat-option>
+
+      </mat-select>
+    </mat-form-field>
+
+  </div>
+  <!--<div style="display: flex; flex-direction: row">
+    <div id="myDiagramDiv" style="flex-grow: 1; height: 700px; "></div>
+  </div>-->
 </div>
 
 

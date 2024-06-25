@@ -1,13 +1,67 @@
-import {Component, Input, Output, EventEmitter, OnDestroy, OnInit} from '@angular/core';
-import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
-//import * as console from "node:console";
+import {Component, Input, Output, EventEmitter, OnInit, SimpleChanges} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import {Node, Edge, Connection, MarkerType, addEdge} from 'reactflow';
+//import { Model } from 'src/app/shared/models/Model.model';
+
+interface NodeWithLabel extends Node {
+  data: {
+    label: string;
+  };
+}
 
 @Component({
   selector: 'app-modelling-area-bpmn',
   templateUrl: './modelling-area-bpmn.component.html',
   styleUrls: ['./modelling-area-bpmn.component.css']
 })
-export class ModellingAreaBPMNComponent implements OnInit, OnDestroy  {
+export class ModellingAreaBPMNComponent implements OnInit {
+
+  @Input() nodes: NodeWithLabel[] = [];
+  @Input() edges: Edge[] = [];
+  /*@Output() nodesChange = new EventEmitter<Node[]>();
+  @Output() edgesChange = new EventEmitter<Edge[]>();
+ */
+  @Output() nodeDoubleClick = new EventEmitter<{ event: MouseEvent, node: Node }>();
+  private lastNodePosition: any;
+  private nodesChange: any;
+
+  onNodeDoubleClick(node: Node) {
+    const newLabel = prompt('Enter new label:', node.data.label ?? '');
+    if (newLabel !== null) {
+      const updatedNode = { ...node, data: { ...node.data, label: newLabel } };
+      this.nodes = this.nodes.map(n => (n.id === node.id ? updatedNode : n));
+      this.nodesChange.emit(this.nodes);
+    }
+  }
+  onNodeDragEnd(event: any) {
+    const { node } = event; // Destructure the node object from the event
+    this.lastNodePosition = node.position; // Update your lastNodePosition property (if needed)
+  }
+
+  /*onNodesChange(event: any) {
+    this.nodes = event.nodes;
+    this.nodesChange.emit(this.nodes);
+  }*/
+
+  /*onEdgesChange(event: any) {
+    this.edges = event.edges;
+    this.edgesChange.emit(this.edges);
+  }*/
+
+  ngOnInit(): void {}
+}
+
+/***import {Component, Input, Output, EventEmitter, OnDestroy, OnInit} from '@angular/core';
+import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
+//import * as console from "node:console";
+import {ReactFlowComponent } from 'ngx-reactflow';
+
+@Component({
+  selector: 'app-modelling-area-bpmn',
+  templateUrl: './modelling-area-bpmn.component.html',
+  styleUrls: ['./modelling-area-bpmn.component.css']
+})
+export class ModellingAreaBPMNComponent implements OnInit, OnDestroy {
   editingNodeId: string | null = null;
   newNodeLabel: string = '';
   @Input() nodes!: Node[];
@@ -18,9 +72,8 @@ export class ModellingAreaBPMNComponent implements OnInit, OnDestroy  {
   @Output() rightClick = new EventEmitter<{ event: MouseEvent, nodeId: string }>();
 
   contextMenuVisible: boolean = false;
-  contextMenuPosition = { x: 0, y: 0 };
+  contextMenuPosition = {x: 0, y: 0};
   selectedNodeId: string | null = null;
-
 
 
   onNodesChange(event: any) {
@@ -51,14 +104,14 @@ export class ModellingAreaBPMNComponent implements OnInit, OnDestroy  {
   onRightClick(event: MouseEvent, nodeId?: string) {
     event.preventDefault();
     this.contextMenuVisible = true;
-    this.contextMenuPosition = { x: event.clientX, y: event.clientY };
+    this.contextMenuPosition = {x: event.clientX, y: event.clientY};
     if (nodeId) {
       this.selectedNodeId = nodeId;
     }
   }
 
   onNodeContextMenu(event: any) {
-    const { event: mouseEvent, node } = event;
+    const {event: mouseEvent, node} = event;
     this.onRightClick(mouseEvent, node.id);
   }
 
@@ -146,6 +199,7 @@ export class ModellingAreaBPMNComponent implements OnInit, OnDestroy  {
     this.editingNodeId = null;
     this.newNodeLabel = '';
   }
+
   handleAddNode(node: Node) {
     this.nodes = [...this.nodes, node];
   }
@@ -161,12 +215,15 @@ export class ModellingAreaBPMNComponent implements OnInit, OnDestroy  {
   handleEdgesChange(updatedEdges: Edge[]) {
     this.edges = updatedEdges;
   }
+
   onAddNode(node: Node) {
     this.nodes = [...this.nodes, node];
   }
+
   onAddEdge(edge: Edge) {
     this.edges = [...this.edges, edge];
   }
+
   handleConnect(connection: Connection) {
     if (connection.source && connection.target) {
       const newEdge: Edge = {
@@ -179,8 +236,9 @@ export class ModellingAreaBPMNComponent implements OnInit, OnDestroy  {
       this.edges = [...this.edges, newEdge];
     }
   }
+
   handleRightClick(event: MouseEvent, nodeId: string) {
-    this.rightClick.emit({ event, nodeId });
+    this.rightClick.emit({event, nodeId});
   }
 
   ngOnDestroy(): void {
@@ -188,5 +246,5 @@ export class ModellingAreaBPMNComponent implements OnInit, OnDestroy  {
 
   ngOnInit(): void {
   }
+}*/
 
-}

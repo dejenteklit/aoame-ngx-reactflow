@@ -1,4 +1,84 @@
+<!--<div class="form-field-container">
+  <mat-form-field class="modelling-language">
+
+    <mat-select placeholder="Modelling Language" (selectionChange)="selectLang($event)" >
+      <mat-option *ngFor="let lang of modelingLanguages" [value]="lang.id">{{ lang.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="modelling-language-view">
+
+    <mat-select placeholder="Modelling View" (selectionChange)="selectView($event)" >
+      <mat-option *ngFor="let view of modelingViews" [value]="view.id">{{ view.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>-->
+<!--<div class="palette-container">
+  <div class="form-field-container">
+    <mat-form-field class="modelling-language">
+      <mat-select placeholder="Modelling Language" id="language-select" (selectionChange)="onLanguageChange($event)">
+        <mat-option *ngFor="let language of languages" [value]="language">{{ language }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="modelling-language-view">
+      <mat-select placeholder="Modelling View" id="view-select" (selectionChange)="onViewChange($event)">
+        <mat-option *ngFor="let view of views" [value]="view">{{ view }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div *ngIf="selectedView === 'Process Modeling View'">
+    <app-palette-area
+    (addNode)="addNodeToModel($event)"
+      (addNode)="onAddNode($event)"
+      (addEdge)="onAddEdge($event)"
+      (connect)="onConnect($event)">
+    </app-palette-area>
+  </div>
+</div>-->
+
 <div class="palette-container">
+  <div class="form-field-container">
+    <mat-form-field class="modelling-language">
+      <mat-select placeholder="Modelling Language" (selectionChange)="onLanguageChange($event)">
+        <mat-option *ngFor="let language of languages" [value]="language">{{ language }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="modelling-language-view">
+      <mat-select placeholder="Modelling Language View" (selectionChange)="onViewChange($event)">
+        <mat-option *ngFor="let view of views" [value]="view">{{ view }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div *ngIf="selectedView === 'Process Modeling View'">
+    <app-palette-area
+      (addNode)="addNodeToModel($event)"
+      (addEdge)="onAddEdge($event)">
+    </app-palette-area>
+  </div>
+</div>
+
+
+<!--<div class="palette-container">
+ <div class="form-field-container">
+  <mat-form-field class="modelling-language">
+  <mat-select placeholder="Modelling Language" id="language-select" (change)="onLanguageChange($event)">
+   <mat-option *ngFor="let language of languages" [value]="language">{{ language }}</mat-option>
+  </mat-select>
+  </mat-form-field>
+   <mat-form-field class="modelling-language-view">
+ <mat-select placeholder="Modelling View" id="view-select" (change)="onViewChange($event)">
+     <mat-option *ngFor="let view of views" [value]="view">{{ view }}</mat-option>
+   </mat-select>
+    </mat-form-field>
+</div>
+  <div *ngIf="selectedView === 'Process Modeling View'">
+    <app-palette-area
+      (addNode)="onAddNode($event)"
+      (addEdge)="onAddEdge($event)"
+      (connect)="onConnect($event)">
+    </app-palette-area>
+  </div>
+</div>-->
+<!--<div class="palette-container">
   <label for="language-select">Select Language:</label>
   <select id="language-select" (change)="onLanguageChange($event)">
     <option *ngFor="let language of languages" [value]="language">{{ language }}</option>
@@ -15,7 +95,7 @@
       (connect)="onConnect($event)">
     </app-palette-area>
   </div>
-</div>
+</div>-->
 <!---<div class="palette-container">
   <div *ngFor="let element of elements" class="palette-item">
 
