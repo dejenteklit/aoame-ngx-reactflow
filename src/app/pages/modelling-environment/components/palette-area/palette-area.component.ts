@@ -1,5 +1,10 @@
-import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
-import { Node, Edge, Position, Connection, MarkerType } from 'reactflow';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { Node, Edge, Position } from 'reactflow';
+
+interface Connector {
+  type: string;
+  src: string;
+}
 
 interface BpmnElement {
   name: string;
@@ -8,10 +13,790 @@ interface BpmnElement {
   sourcePosition: string;
   targetPosition: string;
 }
-/*interface PaletteElement {
+
+@Component({
+  selector: 'app-palette-area',
+  templateUrl: './palette-area.component.html',
+  styleUrls: ['./palette-area.component.css']
+})
+export class PaletteAreaComponent {
+  elements: BpmnElement[] = [
+    { name: 'Non Event', type: 'nonEvent', isConnectable: true, sourcePosition: 'null', targetPosition: 'null' },
+    { name: 'Task', type: 'task', isConnectable: true, sourcePosition: 'null', targetPosition: 'null' }
+  ];
+
+  showStartNode: boolean = false;
+  showEndNode: boolean = false;
+  showTaskOptions: boolean = false;
+  showConnectors: boolean = false; // Control visibility of connector section
+  lastNodePosition = { x: 0, y: 0 };
+  lastNodeId: string | null = null;
+  contextMenuVisible: boolean = false;
+  contextMenuPosition = { x: 0, y: 0 };
+  selectedNodeId: string | null = null;
+
+  connectors: Connector[] = [
+    {type: 'circle', src: 'assets/images/Arrows/Circle.PNG'},
+    {type: 'dash', src: 'assets/images/Strokes/Dash.PNG'},
+    {type: 'triangle', src: 'assets/images/Arrows/Triangle.PNG'},
+    {type: 'single', src: 'assets/images/Strokes/Single.PNG'}
+  ];
+
+  startEventPlaced: boolean = false; // Flag to track if start event is placed
+
+  @Output() addNode = new EventEmitter<Node>();
+  @Output() addEdge = new EventEmitter<Edge>();
+  @Output() nodesChange = new EventEmitter<Node[]>();
+  @Output() edgesChange = new EventEmitter<Edge[]>();
+
+  nodes: Node[] = [];
+  edges: Edge[] = [];
+
+  constructor() {}
+
+  ngOnInit() {}
+
+  onHoverOverNonEvent() {
+    this.showStartNode = true;
+    this.showEndNode = true;
+  }
+
+  onHoverOverTask() {
+    this.showTaskOptions = true;
+  }
+
+  onOptionClick(element: BpmnElement, eventType: string) {
+    // Remove existing nodes if needed
+    this.nodes = this.nodes.filter(node => !node.id.startsWith(`${eventType}-`));
+
+    const nodeId = `${eventType}-${Date.now()}`;
+    const offset = 200;
+
+    const newNodePosition = { x: this.lastNodePosition.x + offset, y: this.lastNodePosition.y };
+
+    let newNode: Node;
+    let newEdge: Edge | null = null;
+
+    // Create new node based on eventType
+    if (eventType === 'startEvent') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: { label: '' },
+        position: newNodePosition,
+        sourcePosition: Position.Right,
+        draggable: true,
+        style: {
+          border: '1px solid black',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          background: 'url("assets/Simple_Start.png")',
+          backgroundSize: 'cover',
+          cursor: 'pointer'
+        }
+      };
+      this.startEventPlaced = true; // Set start event placed flag
+    } else if (eventType === 'endEvent') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: { label: '' },
+        position: newNodePosition,
+        draggable: true,
+        targetPosition: Position.Left,
+        style: {
+          border: '1px solid red',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          background: 'url("assets/Simple_End.png")',
+          backgroundSize: 'cover',
+          cursor: 'pointer'
+        }
+      };
+    } else if (eventType === 'manualTask' || eventType === 'serviceTask') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: { label: '' },
+        position: newNodePosition,
+        draggable: true,
+        style: {
+          border: '1px solid black',
+          borderRadius: '13px',
+          width: '100px',
+          height: '50px',
+          background: eventType === 'manualTask' ? 'url("assets/Manual_Task.png")' : 'url("assets/Service_Task.png")',
+          backgroundSize: 'cover',
+          cursor: 'pointer'
+        },
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left
+      };
+    } else {
+      throw new Error(`Unknown event type: ${eventType}`);
+    }
+
+    // Create new edge if there was a previous node
+    if (this.lastNodeId) {
+      newEdge = {
+        id: `e${this.lastNodeId}-${nodeId}`,
+        source: this.lastNodeId,
+        target: nodeId,
+        sourceHandle: null,
+        targetHandle: null
+      };
+    }
+
+    // Update last node position and id
+    this.lastNodePosition = newNodePosition;
+    this.lastNodeId = nodeId;
+
+    // Add new node to nodes array
+    this.nodes = [...this.nodes, newNode];
+    this.nodesChange.emit(this.nodes);
+    this.addNode.emit(newNode);
+
+    // Add new edge to edges array if exists
+    if (newEdge) {
+      this.edges = [...this.edges, newEdge];
+      this.edgesChange.emit(this.edges);
+      this.addEdge.emit(newEdge);
+    }
+  }
+
+  onHoverOverConnector() {
+    // Implement your connector hover logic if needed
+    console.log('Mouse over connector');
+  }
+
+  onConnectorClick(connector: Connector) {
+    if (this.startEventPlaced) { // Check if start event is placed before creating edges
+      console.log('Clicked on connector:', connector);
+    }
+    // Filter out existing edges based on connector type
+    this.edges = this.edges.filter(edge => {
+      // Replace with your filtering logic based on connector type and edge conditions
+      return !edge.id.startsWith(`e${this.lastNodeId}-`);
+    });
+
+    // Create new style for edges based on connector type
+    const newStyle = this.getEdgeStyleForConnector(connector);
+
+    // Emit changes to edges individually
+    this.edges.forEach(edge => this.addEdge.emit(edge));
+    // Emit batch change
+    this.edgesChange.emit(this.edges);
+  }
+
+  private getEdgeStyleForConnector(connector: Connector) {
+    this.edges = this.edges.map(edge => {
+      let style;
+      if (connector.type === 'circle') {
+        style = {stroke: 'black', strokeWidth: 2, strokeDasharray: '0', markerEnd: 'url(#arrow)'}; // Custom style for circle connector
+      } else if (connector.type === 'dash') {
+        style = {stroke: 'black', strokeWidth: 2, strokeDasharray: '5,5'}; // Custom style for dash connector
+      } else if (connector.type === 'triangle') {
+        style = {stroke: 'black', strokeWidth: 2, strokeDasharray: '5,5', markerEnd: 'url(#arrow)'}; // Custom style for triangle connector
+      } else if (connector.type === 'single') {
+        style = {stroke: 'black', strokeWidth: 2}; // Custom style for single connector
+      }
+      return {...edge, style};
+    });
+  }
+}
+/**import { Component, EventEmitter, Output } from '@angular/core';
+import { Node, Edge, Position } from 'reactflow';
+
+interface Connector {
+  type: string;
+  src: string;
+}
+
+interface BpmnElement {
   name: string;
   type: string;
+  isConnectable: boolean;
+  sourcePosition: string;
+  targetPosition: string;
+}
+
+@Component({
+  selector: 'app-palette-area',
+  templateUrl: './palette-area.component.html',
+  styleUrls: ['./palette-area.component.css']
+})
+export class PaletteAreaComponent {
+  elements: BpmnElement[] = [
+    {name: 'Non Event', type: 'nonEvent', isConnectable: true, sourcePosition: 'null', targetPosition: 'null'},
+    {name: 'Task', type: 'task', isConnectable: true, sourcePosition: 'null', targetPosition: 'null'}
+  ];
+
+  showStartNode: boolean = false;
+  showEndNode: boolean = false;
+  showTaskOptions: boolean = false;
+  showConnectors: boolean = false; // Control visibility of connector section
+  lastNodePosition = {x: 0, y: 0};
+  lastNodeId: string | null = null;
+  contextMenuVisible: boolean = false;
+  contextMenuPosition = {x: 0, y: 0};
+  selectedNodeId: string | null = null;
+
+  connectors: Connector[] = [
+    {type: 'circle', src: 'assets/images/Arrows/Circle.PNG'},
+    {type: 'dash', src: 'assets/images/Strokes/Dash.PNG'},
+    {type: 'triangle', src: 'assets/images/Arrows/Triangle.PNG'},
+    {type: 'single', src: 'assets/images/Strokes/Single.PNG'}
+  ];
+
+  startEventPlaced: boolean = false; // Flag to track if start event is placed
+
+  @Output() addNode = new EventEmitter<Node>();
+  @Output() addEdge = new EventEmitter<Edge>();
+  @Output() nodesChange = new EventEmitter<Node[]>();
+  @Output() edgesChange = new EventEmitter<Edge[]>();
+
+  nodes: Node[] = [];
+  edges: Edge[] = [];
+
+  constructor() {
+  }
+
+  ngOnInit() {
+  }
+
+  onHoverOverNonEvent() {
+    this.showStartNode = true;
+    this.showEndNode = true;
+  }
+
+  onHoverOverTask() {
+    this.showTaskOptions = true;
+  }
+
+  onOptionClick(element: BpmnElement, eventType: string) {
+    // Remove existing nodes if needed
+    this.nodes = this.nodes.filter(node => !node.id.startsWith(`${eventType}-`));
+
+    const nodeId = `${eventType}-${Date.now()}`;
+    const offset = 200;
+
+    const newNodePosition = {x: this.lastNodePosition.x + offset, y: this.lastNodePosition.y};
+
+    let newNode: Node;
+    let newEdge: Edge | null = null;
+
+    // Create new node based on eventType
+    if (eventType === 'startEvent') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: {label: ''},
+        position: newNodePosition,
+        sourcePosition: Position.Right,
+        draggable: true,
+        style: {
+          border: '1px solid black',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          background: 'url("assets/Simple_Start.png")',
+          backgroundSize: 'cover',
+          cursor: 'pointer'
+        }
+      };
+      this.startEventPlaced = true; // Set start event placed flag
+    } else if (eventType === 'endEvent') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: {label: ''},
+        position: newNodePosition,
+        draggable: true,
+        targetPosition: Position.Left,
+        style: {
+          border: '1px solid red',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          background: 'url("assets/Simple_End.png")',
+          backgroundSize: 'cover',
+          cursor: 'pointer'
+        }
+      };
+    } else if (eventType === 'manualTask' || eventType === 'serviceTask') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: {label: ''},
+        position: newNodePosition,
+        draggable: true,
+        style: {
+          border: '1px solid black',
+          borderRadius: '13px',
+          width: '100px',
+          height: '50px',
+          background: eventType === 'manualTask' ? 'url("assets/Manual_Task.png")' : 'url("assets/Service_Task.png")',
+          backgroundSize: 'cover',
+          cursor: 'pointer'
+        },
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left
+      };
+    } else {
+      throw new Error(`Unknown event type: ${eventType}`);
+    }
+
+    // Create new edge if there was a previous node
+    if (this.lastNodeId) {
+      newEdge = {
+        id: `e${this.lastNodeId}-${nodeId}`,
+        source: this.lastNodeId,
+        target: nodeId,
+        sourceHandle: null,
+        targetHandle: null
+      };
+    }
+
+    // Update last node position and id
+    this.lastNodePosition = newNodePosition;
+    this.lastNodeId = nodeId;
+
+    // Add new node to nodes array
+    this.nodes = [...this.nodes, newNode];
+    this.nodesChange.emit(this.nodes);
+    this.addNode.emit(newNode);
+
+    // Add new edge to edges array if exists
+    if (newEdge) {
+      this.edges = [...this.edges, newEdge];
+      this.edgesChange.emit(this.edges);
+      this.addEdge.emit(newEdge);
+    }
+  }
+
+  onHoverOverConnector() {
+    // Implement your connector hover logic if needed
+    console.log('Mouse over connector');
+  }
+
+  onConnectorClick(connector: Connector) {
+    if (this.startEventPlaced) { // Check if start event is placed before creating edges
+      console.log('Clicked on connector:', connector);
+    }
+    // Filter out existing edges based on connector type
+    this.edges = this.edges.filter(edge => {
+      // Replace with your filtering logic based on connector type and edge conditions
+      return !edge.id.startsWith(`e${this.lastNodeId}-`);
+    });
+
+    // Create new style for edges based on connector type
+    const newStyle = this.getEdgeStyleForConnector(connector);
+
+    // Emit changes to edges individually
+    this.edges.forEach(edge => this.addEdge.emit(edge));
+    // Emit batch change
+    this.edgesChange.emit(this.edges);
+  }
+
+  private getEdgeStyleForConnector(connector: Connector) {
+    this.edges = this.edges.map(edge => {
+      let style;
+      if (connector.type === 'circle') {
+        style = {stroke: 'black', strokeWidth: 2, strokeDasharray: '0', markerEnd: 'url(#arrow)'}; // Custom style for circle connector
+      } else if (connector.type === 'dash') {
+        style = {stroke: 'black', strokeWidth: 2, strokeDasharray: '5,5'}; // Custom style for dash connector
+      } else if (connector.type === 'triangle') {
+        style = {stroke: 'black', strokeWidth: 2, strokeDasharray: '5,5', markerEnd: 'url(#arrow)'}; // Custom style for triangle connector
+      } else if (connector.type === 'single') {
+        style = {stroke: 'black', strokeWidth: 2}; // Custom style for single connector
+      }
+      return {...edge, style};
+    });
+  }
 }*/
+
+/**
+import { Component, EventEmitter, Output } from '@angular/core';
+import { Node, Edge, Position } from 'reactflow';
+
+interface Connector {
+  type: string;
+  src: string;
+}
+
+interface BpmnElement {
+  name: string;
+  type: string;
+  isConnectable: boolean;
+  sourcePosition: string;
+  targetPosition: string;
+}
+
+@Component({
+  selector: 'app-palette-area',
+  templateUrl: './palette-area.component.html',
+  styleUrls: ['./palette-area.component.css']
+})
+export class PaletteAreaComponent {
+  elements: BpmnElement[] = [
+    { name: 'Non Event', type: 'nonEvent', isConnectable: true, sourcePosition: 'null', targetPosition: 'null' },
+    { name: 'Task', type: 'task', isConnectable: true, sourcePosition: 'null', targetPosition: 'null' }
+  ];
+
+  showStartNode: boolean = false;
+  showEndNode: boolean = false;
+  showTaskOptions: boolean = false;
+  showConnectors: boolean = false; // Control visibility of connector section
+  lastNodePosition = { x: 0, y: 0 };
+  lastNodeId: string | null = null;
+  contextMenuVisible: boolean = false;
+  contextMenuPosition = { x: 0, y: 0 };
+  selectedNodeId: string | null = null;
+
+  connectors: Connector[] = [
+    { type: 'circle', src: 'assets/images/Arrows/Circle.PNG' },
+    { type: 'dash', src: 'assets/images/Strokes/Dash.PNG' },
+    { type: 'triangle', src: 'assets/images/Arrows/Triangle.PNG' },
+    { type: 'single', src: 'assets/images/Strokes/Single.PNG' }
+  ];
+
+  startEventPlaced: boolean = false; // Flag to track if start event is placed
+
+  @Output() addNode = new EventEmitter<Node>();
+  @Output() addEdge = new EventEmitter<Edge>();
+  @Output() nodesChange = new EventEmitter<Node[]>();
+  @Output() edgesChange = new EventEmitter<Edge[]>();
+
+  nodes: Node[] = [];
+  edges: Edge[] = [];
+
+  constructor() {}
+
+  ngOnInit() {}
+
+  onHoverOverNonEvent() {
+    this.showStartNode = true;
+    this.showEndNode = true;
+  }
+
+  onHoverOverTask() {
+    this.showTaskOptions = true;
+  }
+
+  onOptionClick(element: BpmnElement, eventType: string) {
+    const nodeId = `${eventType}-${Date.now()}`;
+    const offset = 200;
+
+    const newNodePosition = { x: this.lastNodePosition.x + offset, y: this.lastNodePosition.y };
+
+    let newNode: Node;
+    let newEdge: Edge | null = null;
+
+    if (eventType === 'startEvent') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: { label: '' },
+        position: newNodePosition,
+        sourcePosition: Position.Right,
+        draggable: true,
+        style: {
+          border: '1px solid black',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          background: 'url("assets/Simple_Start.png")',
+          backgroundSize: 'cover',
+          cursor: 'pointer'
+        }
+      };
+      this.startEventPlaced = true; // Set start event placed flag
+    } else if (eventType === 'endEvent') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: { label: '' },
+        position: newNodePosition,
+        draggable: true,
+        targetPosition: Position.Left,
+        style: {
+          border: '1px solid red',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          background: 'url("assets/Simple_End.png")',
+          backgroundSize: 'cover',
+          cursor: 'pointer'
+        }
+      };
+    } else if (eventType === 'manualTask' || eventType === 'serviceTask') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: { label: '' },
+        position: newNodePosition,
+        draggable: true,
+        style: {
+          border: '1px solid black',
+          borderRadius: '13px',
+          width: '100px',
+          height: '50px',
+          background: eventType === 'manualTask' ? 'url("assets/Manual_Task.png")' : 'url("assets/Service_Task.png")',
+          backgroundSize: 'cover',
+          cursor: 'pointer'
+        },
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left
+      };
+    } else {
+      throw new Error(`Unknown event type: ${eventType}`);
+    }
+
+    if (this.lastNodeId) {
+      newEdge = {
+        id: `e${this.lastNodeId}-${nodeId}`,
+        source: this.lastNodeId,
+        target: nodeId,
+        sourceHandle: null,
+        targetHandle: null
+      };
+    }
+
+    this.lastNodePosition = newNodePosition;
+    this.lastNodeId = nodeId;
+    this.nodes = [...this.nodes, newNode];
+    this.nodesChange.emit(this.nodes);
+    this.addNode.emit(newNode);
+    if (newEdge) {
+      this.edges = [...this.edges, newEdge];
+      this.edgesChange.emit(this.edges);
+      this.addEdge.emit(newEdge);
+    }
+  }
+
+  onHoverOverConnector() {
+    // Implement your connector hover logic if needed
+    console.log('Mouse over connector');
+  }
+
+  onConnectorClick(connector: Connector) {
+    if (this.startEventPlaced) { // Check if start event is placed before creating edges
+      console.log('Clicked on connector:', connector);
+
+      // Update the style of existing edges based on the connector type
+      this.edges = this.edges.map(edge => {
+        let style;
+        if (connector.type === 'circle') {
+          style = { stroke: 'black', strokeWidth: 2, strokeDasharray: '0', markerEnd: 'url(#arrow)' }; // Custom style for circle connector
+        } else if (connector.type === 'dash') {
+          style = { stroke: 'black', strokeWidth: 2, strokeDasharray: '5,5' }; // Custom style for dash connector
+        } else if (connector.type === 'triangle') {
+          style = { stroke: 'black', strokeWidth: 2, strokeDasharray: '5,5', markerEnd: 'url(#arrow)' }; // Custom style for triangle connector
+        } else if (connector.type === 'single') {
+          style = { stroke: 'black', strokeWidth: 2 }; // Custom style for single connector
+        }
+        return { ...edge, style };
+      });
+
+      // Emit the changes for each updated edge individually
+      this.edges.forEach(edge => this.addEdge.emit(edge));
+      // Emit the batch change
+      this.edgesChange.emit(this.edges);
+    } else {
+      console.log('Cannot create edge before start event is placed.');
+    }
+  }
+  }*/
+/*import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Node, Edge, Position } from 'reactflow';
+import { ModelingLanguageModel } from 'src/app/shared/models/ModelingLanguage.model';
+
+interface BpmnElement {
+  name: string;
+  type: string;
+  isConnectable: boolean;
+  sourcePosition: string;
+  targetPosition: string;
+}
+
+@Component({
+  selector: 'app-palette-area',
+  templateUrl: './palette-area.component.html',
+  styleUrls: ['./palette-area.component.css']
+})
+export class PaletteAreaComponent implements OnInit {
+  elements: BpmnElement[] = [
+    { name: 'Non Event', type: 'nonEvent', isConnectable: true, sourcePosition: 'null', targetPosition: 'null' },
+    { name: 'Task', type: 'task', isConnectable: true, sourcePosition: 'null', targetPosition: 'null' }
+  ];
+
+  showStartNode: boolean = false;
+  showEndNode: boolean = false;
+  showTaskOptions: boolean = false;
+  showConnectors: boolean = false; // Control visibility of connector section
+  lastNodePosition = { x: 0, y: 0 };
+  lastNodeId: string | null = null;
+  contextMenuVisible: boolean = false;
+  contextMenuPosition = { x: 0, y: 0 };
+  selectedNodeId: string | null = null;
+
+  @Output() addNode = new EventEmitter<Node>();
+  @Output() addEdge = new EventEmitter<Edge>();
+  @Output() nodesChange = new EventEmitter<Node[]>();
+  @Output() edgesChange = new EventEmitter<Edge[]>();
+
+  nodes: Node[] = [];
+  edges: Edge[] = [];
+  public modelingLanguages: ModelingLanguageModel[] = [];
+
+  constructor() {}
+
+  ngOnInit() {}
+
+  onHoverOverNonEvent() {
+    this.showStartNode = true;
+    this.showEndNode = true;
+  }
+
+  onHoverOverTask() {
+    this.showTaskOptions = true;
+  }
+
+  onOptionClick(element: BpmnElement, eventType: string) {
+    const nodeId = `${eventType}-${Date.now()}`;
+    const offset = 200;
+
+    const newNodePosition = { x: this.lastNodePosition.x + offset, y: this.lastNodePosition.y };
+
+    let newNode: Node;
+    let newEdge: Edge | null = null;
+
+    if (eventType === 'startEvent') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: { label: '' },
+        position: newNodePosition,
+        sourcePosition: Position.Right,
+        draggable: true,
+        style: {
+          border: '0.20px solid black',
+          borderRadius: '50%',
+          width: '58px',
+          height: '58px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'url("assets/Simple_Start.png")',
+          backgroundSize: 'cover',
+          color: 'black',
+          fontSize: '10px',
+          cursor: 'pointer',
+          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+          userSelect: 'none',
+          transition: 'background-color 0.3s ease'
+        }
+      };
+    } else if (eventType === 'endEvent') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: { label: '' },
+        position: newNodePosition,
+        draggable: true,
+        targetPosition: Position.Left,
+        style: {
+          border: '0.10px solid red',
+          borderRadius: '50%',
+          width: '58px',
+          height: '58px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'url("assets/Simple_End.png")',
+          backgroundSize: 'cover',
+          color: 'black',
+          fontSize: '10px',
+          cursor: 'pointer',
+          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+          userSelect: 'none',
+          transition: 'background-color 0.3s ease'
+        }
+      };
+
+    } else if (eventType === 'manualTask' || eventType === 'serviceTask') {
+      newNode = {
+        id: nodeId,
+        type: eventType,
+        data: { label: '' },
+        position: newNodePosition,
+        draggable: true,
+        style: {
+          border: '0.20px solid black',
+          borderRadius: '13px',
+          width: '103px',
+          height: '58px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: eventType === 'manualTask' ? 'url("assets/Manual_Task.png")' : 'url("assets/Service_Task.png")',
+          backgroundSize: 'cover',
+          color: 'yellow',
+          fontSize: '10px',
+          cursor: 'pointer',
+          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+          userSelect: 'none',
+          transition: 'background-color 0.3s ease'
+        },
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left
+      };
+    } else {
+      throw new Error(`Unknown event type: ${eventType}`);
+    }
+
+    if (this.lastNodeId) {
+      newEdge = {
+        id: `e${this.lastNodeId}-${nodeId}`,
+        source: this.lastNodeId,
+        target: nodeId,
+        sourceHandle: null,
+        targetHandle: null
+      };
+    }
+
+    this.lastNodePosition = newNodePosition;
+    this.lastNodeId = nodeId;
+    this.nodes = [...this.nodes, newNode];
+    this.nodesChange.emit(this.nodes);
+    this.addNode.emit(newNode);
+    if (newEdge) {
+      this.edges = [...this.edges, newEdge];
+      this.edgesChange.emit(this.edges);
+      this.addEdge.emit(newEdge);
+    }
+  }
+
+  onHoverOverConnector() {
+    // Implement your connector hover logic if needed
+    console.log('Mouse over connector');
+  }
+}*/
+
+/**import { Component, EventEmitter, Output, OnInit, Input } from '@angular/core';
+import { Node, Edge, Position, Connection, MarkerType } from 'reactflow';
+import { ModelingLanguageModel } from 'src/app/shared/models/ModelingLanguage.model';
+
+interface BpmnElement {
+  name: string;
+  type: string;
+  isConnectable: boolean;
+  sourcePosition: string;
+  targetPosition: string;
+}
+
 
 @Component({
   selector: 'app-palette-area',
@@ -41,6 +826,7 @@ export class PaletteAreaComponent implements OnInit {
 
   nodes: Node[] = [];
   edges: Edge[] = [];
+  public modelingLanguages: ModelingLanguageModel[] = [];
 
   constructor() {
   }
@@ -183,7 +969,7 @@ export class PaletteAreaComponent implements OnInit {
     }
   }
 
-}
+}*/
 /***import {Component, EventEmitter, Output, OnInit, Input} from '@angular/core';
 import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';
 interface PaletteElement {

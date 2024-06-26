@@ -25,6 +25,25 @@ export class ModellingAreaBPMNComponent implements OnInit {
   private lastNodePosition: any;
   private nodesChange: any;
 
+
+  onAddNode(node: Node) {
+    this.nodes = [...this.nodes, node];
+  }
+
+  onAddEdge(edge: Edge) {
+    // Replace existing edge if one with the same id exists
+    this.edges = this.edges.filter(e => e.id !== edge.id);
+    this.edges = [...this.edges, edge];
+  }
+
+  onNodesChange(nodes: Node[]) {
+    this.nodes = nodes;
+  }
+
+  onEdgesChange(edges: Edge[]) {
+    this.edges = edges;
+  }
+
   onNodeDoubleClick(node: Node) {
     const newLabel = prompt('Enter new label:', node.data.label ?? '');
     if (newLabel !== null) {
@@ -50,6 +69,9 @@ export class ModellingAreaBPMNComponent implements OnInit {
 
   ngOnInit(): void {}
 }
+
+
+
 
 /***import {Component, Input, Output, EventEmitter, OnDestroy, OnInit} from '@angular/core';
 import { Node, Edge, Connection, addEdge, MarkerType } from 'reactflow';

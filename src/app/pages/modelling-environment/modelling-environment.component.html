@@ -45,16 +45,18 @@
 </div>--->
 
 <div fxLayout="row" class="flex-container" style="flex-direction: row; box-sizing: border-box; display: flex;">
-  <div class="palette-area">
+  <div _ngcontent-mgi-c147="" class="palette-area">
     <app-palette-area-bpmn
       (addNode)="onAddNode($event)"
-      (addEdge)="onAddEdge($event)">
+      (addEdge)="onAddEdge($event)"
+      >
     </app-palette-area-bpmn>
   </div>
   <div class="modelling-area">
     <app-modelling-area-bpmn
       [nodes]="nodes"
-      [edges]="edges">
+      [edges]="edges"
+      (nodeDoubleClick)="onDoubleClickNode($event)">
     </app-modelling-area-bpmn>
   </div>
 </div>

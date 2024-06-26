@@ -14,7 +14,7 @@
   display: inline-block;
 }
 
-.dropbtn{
+.dropbtn {
   background-color: #6ad8cd; /* Light blue background */
   color: black;
   padding: 16px;
@@ -24,7 +24,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  width: 60px; /* Increased width */
+  height: 60px; /* Increased height */
 }
+
 .dropbtn-task {
   background-color: #ecb468;
   color: black;
@@ -35,15 +39,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.dropbtn {
-  border-radius: 50%;
-  width: 60px; /* Increased width */
-  height: 60px; /* Increased height */
-}
-
-.dropbtn-task {
   border-radius: 10px; /* Rounded corners */
   width: 100px; /* Width for task node */
   height: 60px; /* Height for task node */
@@ -68,14 +63,16 @@
   z-index: 1;
 }
 
-.dropdown-content .dropdown-item, .dropdown-content .task-item {
+.dropdown-content .dropdown-item,
+.dropdown-content .task-item {
   display: flex;
   align-items: center;
   padding: 12px 16px;
   cursor: pointer;
 }
 
-.dropdown-content .dropdown-item:hover, .dropdown-content .task-item:hover {
+.dropdown-content .dropdown-item:hover,
+.dropdown-content .task-item:hover {
   background-color: #f8b333;
 }
 
@@ -109,6 +106,7 @@
 .dropdown:hover .dropbtn {
   background-color: #038a77;
 }
+
 .dropdown:hover .dropdown:hover .dropbtn-task {
   background-color: #f69f34;
 }
@@ -154,6 +152,7 @@
   background-color: #fdb36a;
   color: #f69f34;
 }
+
 .section-title {
   font-size: 1em;
   font-weight: bold;
@@ -161,10 +160,29 @@
   border-top: 0.5px solid #838485;
   border-bottom: 0.5px solid #b5b3b3;
 }
+
 .react-flow__handle[data-handlepos="top"] {
   display: none !important;
 }
 
+/* Connectors Section Styles */
+.connectors-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 
+.connector-item img {
+  width: 30px; /* Smaller size for connectors */
+  height: 30px;
+  cursor: pointer;
+  border: 1.5px solid #056e60; /* Border color */
+  padding: 5px; /* Padding inside the border */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  color: black;
+}
 
-
+.connector-item img:hover {
+  background-color: #038a77; /* Hover background color */
+  transform: scale(1.1); /* Slightly increase size on hover */
+}
